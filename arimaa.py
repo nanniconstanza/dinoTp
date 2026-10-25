@@ -1,4 +1,4 @@
-from definiciones import * 
+from definiciones import *
 
 #### Algunas funciones ya dadas
 
@@ -19,9 +19,6 @@ def direccion_desde_hasta(pos1 : Posicion, pos2 : Posicion) -> Direccion: # prag
 
 def pasar_turno(j : Juego) -> Juego: # pragma: no cover
     return Juego(j.tablero, oponente(j.turno), 0)
-
-
-
 
 
 
@@ -52,11 +49,11 @@ def tablero_bien_formado(t : Tablero) -> bool:
 
         return esTableroBienFormado
 
-print("espero: True")
-print(tablero_bien_formado([[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]]))
+# print("espero: True")
+# print(tablero_bien_formado([[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]]))
 
-print("espero: False")
-print(tablero_bien_formado([[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0],[0,0,0]]))
+# print("espero: False")
+# print(tablero_bien_formado([[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0],[0,0,0]]))
 
 
 # problema posición_en_tablero ( in pos : Posición ) : Bool {
@@ -129,6 +126,7 @@ def juego_bien_formado(j : Juego) -> bool:
     # ∧ (d = Este → (pos′ . fila = pos. fila ∧ pos′ . columna = pos. columna + 1))
     # ∧ (d = Oeste → (pos′ . fila = pos. fila ∧ pos′ . columna = pos. columna - 1))
 
+
 def posicion_vecina_hacia(pos : Posicion, d : Direccion) -> Posicion:
     
 
@@ -148,9 +146,12 @@ def posicion_vecina_hacia(pos : Posicion, d : Direccion) -> Posicion:
     # asegura { res = t[pos. fila ][pos. columna ] }
     
 def casilla_en_posicion(t : Tablero, p : Posicion) -> Casilla:
-    return t[p.fila][p.columna]
+    
+    casilla: Casilla = t[p.fila][p.columna]
 
-# problema hay_casilla_vac í a ( in t : Tablero , in pos : Posición ) : Bool {
+    return casilla
+
+# problema hay_casilla_vacía ( in t : Tablero , in pos : Posición ) : Bool {
     # requiere { tableroBienFormado (t) ∧ posici ó nEnTablero (pos) }
     # asegura { res = true ←→ hayCasillaVacía(t, pos) }
 
@@ -159,7 +160,10 @@ def casilla_en_posicion(t : Tablero, p : Posicion) -> Casilla:
 # ∧ t[pos. fila ][pos. columna ] = Vacía
 
 def hay_casilla_vacia(t : Tablero, pos : Posicion) -> bool:
-    return (t[pos.fila][pos.columna] == VACIA)
+    
+    casilla: Casilla = t[pos.fila][pos.columna]
+
+    return (casilla == VACIA)
 
 # problema hay_pieza_de_color ( in t : Tablero , in pos : Posición , in col : Color ) : Bool {
 # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
@@ -177,7 +181,11 @@ def hay_casilla_vacia(t : Tablero, pos : Posicion) -> bool:
 
 def hay_pieza_de_color(t : Tablero, pos : Posicion, col : Color) -> bool:
    
-   return ( not(hay_casilla_vacia(t,pos)) and t[pos.fila][pos.columna].color == col )
+   casilla: Casilla = t[pos.fila][pos.columna]
+
+   return ( not (hay_casilla_vacia(t,pos)) and ( casilla.color == col ) )
+
+
 
 #### Ejercicio 3
 
@@ -194,7 +202,7 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
 
-    return posicion_en_tablero(pos_vecina) and hay_casilla_vacia(pos_vecina)
+    return ( posicion_en_tablero(pos_vecina) and hay_casilla_vacia(pos_vecina) )
 
 
 # problema hay_pieza_amiga_vecina ( in t : Tablero , in pos : Posición ) : Bool {
@@ -215,13 +223,15 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
 def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
 
     direcciones: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
-    color = t[pos.fila][pos.columna].color
+    casilla: Casilla = t[pos.fila][pos.columna]
+    color: Color = casilla.color
 
     for d in direcciones:
         pos_vecina: Posicion = (posicion_vecina_hacia(pos,d))
+        casilla_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
 
-        if not ( hay_casilla_vacia(t,pos)):
-            pieza: Pieza = t[pos_vecina.fila][pos_vecina.columna]
+        if not ( hay_casilla_vacia(t,pos_vecina)):
+            pieza: Pieza = casilla_vecina
             if pieza.color == color:
                  return True
 
@@ -242,24 +252,65 @@ def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
 
 def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
-    fuerza_pos = fuerza(t[pos.fila][pos.columna].figura)
-    
-    pos_en_direccion: Posicion = posicion_vecina_hacia(pos,d)
+    casilla_pos: Casilla = t[pos.fila][pos.columna]
+    figura_pos: Figura = casilla_pos.figura
+    fuerza_pos: int = fuerza(figura_pos)
 
-    fuerza_vecina = fuerza(t[pos_en_direccion.fila][pos_en_direccion.columna].figura)
+    pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
+    casilla_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
+    figura_vecina: Figura = casilla_vecina.figura
+    fuerza_vecina = fuerza(figura_vecina)
 
-    if posicion_en_tablero(pos_en_direcion):
+    if posicion_en_tablero(pos_vecina):
          
-         if t[pos_en_direccion.fila][pos_en_direccion.columna].color == t[pos.fila][pos.columna].color:
+         if casilla_vecina.color == casilla_pos.color:
               return False
          else:
               if  fuerza_pos > fuerza_vecina:
                    return True
               else:
                    return False
+              
+    return False
+
+# problema hay_pieza_enemiga_más_fuerte_vecina ( in t : Tablero , in pos : Posición ) : Bool {
+    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
+    # requiere { hayPieza (t, pos) }
+    # asegura { res = true ←→ hayPiezaEnemigaMásFuerteVecina (t, pos) }
+# # }
+
+# aux hayPiezaEnemigaMásFuerteVecina (t : Tablero , pos : Posición ) :=
+    # existe d: Dirección . hayPiezaEnemigaMasFuerteHacia (t, pos, d)
+
+# aux hayPiezaEnemigaMásFuerteHacia (t : Tablero , pos : Posición , d : Dirección ) :=
+    # existe f : Figura.existe col: Color . existe posenemiga : Posición .existe fenemiga : Figura . (
+    # hayFiguraDeColor (t, pos, f , col)
+    # ∧ esPosiciónVecinaHacia (pos, d, posenemiga )
+    # ∧ hayFiguraDeColor (t, posenemiga , fenemiga , oponente (col))
+    # ∧ fuerza (f ) < fuerza (fenemiga )
+    # )
 
 def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
-    raise Exception("No implementado")
+
+    casilla_pos: Casilla = t[pos.fila][pos.columna]
+    figura_pos: Figura = casilla_pos.figura
+    color_pos: Color = figura_pos.color
+    fuerza_pos: int = fuerza(figura)
+    
+    direcciones: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
+
+    for d in direcciones:
+        pos_vecina_d: Posicion = posicion_vecina_hacia(pos,d)
+        casilla_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
+        figura_vecina_d: Figura = casilla_vecina_d.figura 
+        fuerza_vecina_d: int = fuerza(figura_vecina_d)
+
+
+        if not(hay_casilla_vacia(pos_vecina_d)) and not(hay_pieza_de_color(t, pos_vecina_d, color_pos))  :
+            if fuerza_vecina_d > fuerza_pos:
+                 return True
+
+    return False 
 
 def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
     raise Exception("No implementado")
@@ -286,4 +337,5 @@ def hay_ganador_determinado(j : Juego) -> bool:
 
 def ganador_del_juego(j : Juego) -> Color:
     raise Exception("No implementado")
+
 
