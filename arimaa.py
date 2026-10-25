@@ -108,11 +108,11 @@ def movimiento_bien_formado(m : Movimiento) -> bool:
 
 # aux juegoBienFormado (j : Juego ) :=
     # tableroBienFormado (j . tablero )
-    # ∧ 0 ≤ j . pasosConsumidos < Max_pasos
+    # ∧ 0 ≤ j . pasos_consumidos < Max_pasos
 
 
 def juego_bien_formado(j : Juego) -> bool:
-   return tablero_bien_formado(j.tablero) and (0 <= j.pasosConsumidos < MAX_PASOS)
+   return tablero_bien_formado(j.tablero) and (0 <= j.pasos_consumidos < MAX_PASOS)
 
 #### Ejercicio 2
 
