@@ -7,6 +7,8 @@ Escriban que estan haciendo:
             la funcion auxiliar esPosiciónVecinaHacia (pos:Posición,d:Dirección,pos′:Posición) no está definida,
             para el ejercicio 2.1 no hace falta pero aviso.
 
+(cuando modifiquen algo, pongalo en el nombre del cambio que hicieron)
+(el nombre del archivo mantengamoslos igual)
 
 Criterios de orden:
   .) Por cada ejercicio pegamos los requiere y asegura de sus funciones.
