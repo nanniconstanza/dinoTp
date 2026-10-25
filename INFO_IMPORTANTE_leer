@@ -3,10 +3,12 @@ Trabajo Practico de Introducción a la Programación ( ex Algo I)
 
 Escriban que estan haciendo:
     Coni: ejercicio 3 y aclaraciones en cada funcion 
-    Camilo: pruebas de testing en el ejercicio 1 y 2 
+    Camilo: pruebas de testing en el ejercicio 1 y 2
+            la funcion auxiliar esPosiciónVecinaHacia (pos:Posición,d:Dirección,pos′:Posición) no está definida,
+            para el ejercicio 2.1 no hace falta pero aviso.
 
 
 Criterios de orden:
-  .) Por cada ejercicio pegamos los requiere y asegura de sus funciones
-  .) Luego de los requiere y asegura de cada función, comentamos qué hace la funcion, no cómo lo hace.
+  .) Por cada ejercicio pegamos los requiere y asegura de sus funciones.
+  .) Luego comentamos qué hace la funcion, no cómo lo hace.
   .) Intentemos declarar variables con las que vamos a tratar en cada funcion Y SU TIPO.
