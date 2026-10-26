@@ -601,9 +601,33 @@ def activar_trampas(t : Tablero) -> Tablero:
 
     
 #### Ejercicio 6
-
+##explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar 
+## requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
+##requiere { puedeRealizarMovimiento (j, m) ##}
+##asegura { juegoBienFormado (res) }
+##asegura { juegoPostMovimiento (j, res, m) }
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
-    raise Exception("No implementado")
+t:tablero=j.tablero
+posOponente:posicion=posición_vecina_hacia(m.origen,oponente(m.pasos[1]))   	
+piezaOponente:casilla=casilla_en_posicion(t, posOponente)
+pos:posicion=m.origen
+pieza:casilla= casilla_en_posicion(t, pos)
+pos2:Posicion= posición_vecina_hacia(pos,m.pasos[0])
+pieza2: Casilla= casilla_en_posicion(t, pos2)
+pos3 : Posicion= posición_vecina_hacia(pos2,m.pasos[1])
+    if m.accion==MOVER_A_SECAS:
+    	t[pos2.fila][pos2.columna]=pieza
+    	t[pos.fila][pos.columna]=VACIO
+    elif m.accion == ARRASTRAR :
+    	t[pos2.fila][pos2.columna]=pieza
+    	t[pos.fila][pos.columna]=piezaOponente
+    	t[posOponente.fila][posOponente.columna]=VACIO
+    elif m.accion == EMPUJAR:
+    	t[pos3.fila][pos3.columna]=pieza2
+    	t[pos2.fila][pos2.columna]=pieza
+    	t[pos.fila][pos.columna]=VACIO
+j2= (tablero,j.turno,j.pasosConsumidos)
+if juego_bien_formado(j2) and
 
 #### Ejercicio 7
 
