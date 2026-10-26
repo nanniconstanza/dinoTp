@@ -601,7 +601,7 @@ def activar_trampas(t : Tablero) -> Tablero:
 
     
 #### Ejercicio 6
-##explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar 
+##explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar
 ## requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
 ##requiere { puedeRealizarMovimiento (j, m) ##}
 ##asegura { juegoBienFormado (res) }
@@ -627,7 +627,7 @@ pos3 : Posicion= posición_vecina_hacia(pos2,m.pasos[1])
     	t[pos2.fila][pos2.columna]=pieza
     	t[pos.fila][pos.columna]=VACIO
 j2= (tablero,j.turno,j.pasosConsumidos)
-if juego_bien_formado(j2) and
+return j2
 
 #### Ejercicio 7
 
