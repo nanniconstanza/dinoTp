@@ -426,9 +426,11 @@ def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
 
 #### Ejercicio 4
 
+#definimos la funcion auxiliar: direcciónDeMovimientoHabilitada
+
 # problema direcciónDeMovimientoHabilitada( in t : Tablero , pos : Posición , d : Dirección ) : Bool {
     # requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
-    # asegura { res = true ←→ puedeRealizarMovimiento (j , m) }
+    # asegura { res = true ←→ hayFiguraDeColor (t, pos, f , col) ∧ ((f = Conejo ∧ col = Dorado ) → d ̸= Sur ) ∧ ((f = Conejo ∧ col = Plateado ) → d ̸= Norte ) }
     # }
 
 # aux direcciónDeMovimientoHabilitada (t : Tablero , pos : Posición , d : Dirección ) :=
@@ -584,7 +586,7 @@ def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego =
 # Explicacion: esta funcion busca eliminar del tablero las piezas que estan en las posiciones trampa en el caso de que no tenga una pieza amiga vecina
 # para eso revisa por cada poscion trampa (pos_trampa), si la pos_trampa no esta vacia y no tiene una pieza amiga vecina
 # de ser ambas condiciones True -> vacia la casilla de pos_trampa donde estaba la pieza (entonces si Casilla = PIEZA, ahora Casilla = VACIO)
-# como solo modifica el mismo tablero ("t") dado, modifica el mismo tablero dado, no crea uno nuevo
+# como solo modifica el mismo tablero ("t") dado, no debe hacer return, modifica el tablero dado
 
 def activar_trampas(t : Tablero) -> Tablero:
 
