@@ -670,7 +670,7 @@ def activar_trampas(t : Tablero) -> Tablero:
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
     t: Tablero = j.tablero
 
-    posOponente: Posicion = posicion_vecina_hacia(m.origen,Oponente(m.pasos[1]))   # que es Oponente ???	
+    posOponente: Posicion = posicion_vecina_hacia(m.origen,Oponente(m.pasos[1]))   
     piezaOponente: Casilla = casilla_en_posicion(t, posOponente) # creo que no se lo puede inicializar afuera pues si es mover a secas no existe !!!
 
     pos: Posicion = m.origen 
