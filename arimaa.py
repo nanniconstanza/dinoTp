@@ -601,33 +601,101 @@ def activar_trampas(t : Tablero) -> Tablero:
 
     
 #### Ejercicio 6
-##explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar
-## requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
-##requiere { puedeRealizarMovimiento (j, m) ##}
-##asegura { juegoBienFormado (res) }
-##asegura { juegoPostMovimiento (j, res, m) }
+
+# problema realizar_movimiento ( in j : Juego , in m : Movimiento ) : Juego {
+    # requiere { juegoBienFormado (j ) ∧ movimientoBienFormado (m) }
+    # requiere { puedeRealizarMovimiento (j , m) }
+    # asegura { juegoBienFormado (res) }
+    # asegura { juegoPostMovimiento (j , res, m) }
+    # }
+
+# aux juegoPostMovimiento (j0 , j1 : Juego , m : Movimiento ) :=
+    # tableroPostMovimiento (j0 . tablero , j1 . tablero , m)
+    # ∧ j uegoConTurnoPosiblementeAvanzado (j0 , j1 , m)
+
+# aux tableroPostMovimiento (t0 , t1 : Tablero , m : Movimiento ) :=
+    # (m.acción = Mover_a_secas → tableroPostMoverASecas (t0 , t1 , m.origen , m.pasos [0]))
+    # ∧ (m.acción = Arrastrar → tableroPostArrastrar (t0 , t1 , m.origen , m.pasos [0] , m.pasos [1]))
+#     # ∧ (m.acción = Empujar → tableroPostEmpujar (t0 , t1 , m.origen , m.pasos [0] , m.pasos [1]))
+
+# aux tableroPostMoverASecas (t0 , t1 : Tablero , pos : Posición , d : Dirección ) :=
+    # existe posdestino : Posición . existe tintermedio : Tablero . (
+    # esPosici ó nVecinaHacia (pos, d, posdestino )
+    # ∧ esTableroTrasladandoPieza (t0 , tintermedio , pos, posdestino )
+    # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio , t1 )
+    # )
+
+# aux tableroPostArrastrar (t0 , t1 : Tablero , pos : Posición , d, darrastre : Dirección ) :=
+    # existe poshueco , posenemiga : Posición . existe tintermedio1 ,tintermedio2 : Tablero . (
+    # esPosici ó nVecinaHacia (pos, d, poshueco )
+    # ∧ esPosici ó nVecinaHacia (pos, opuesta (darrastre ) , posenemiga )
+    # ∧ esTableroTrasladandoPieza (t0 , tintermedio1 , pos, poshueco )
+    # ∧ esTableroTrasladandoPieza (tintermedio1 , tintermedio2 , posenemiga , pos)
+    # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio2 , t1 )
+    # )
+
+# aux tableroPostEmpujar (t0 , t1 : Tablero , pos : Posición , d, dempuje : Dirección ) :=
+    # existe posenemiga , poshueco : Posición . existe tintermedio1 ,tintermedio2 : Tablero . (
+    # esPosiciónVecinaHacia (pos, d, posenemiga )
+    # ∧ esPosiciónVecinaHacia (posenemiga , dempuje , poshueco )
+    # ∧ esTableroTrasladandoPieza (t0 , tintermedio1 , posenemiga , poshueco )
+    # ∧ esTableroTrasladandoPieza (tintermedio1 , tintermedio2 , pos, posenemiga )
+    # ∧ esTableroDespuésDeActivarTodasLasTrampas (tintermedio2 , t1 )
+    # )
+
+
+# aux esTableroTrasladandoPieza (t0 , t1 : Tablero , posorigen ,posdestino : Posición ) :=
+    # existe f : Figura .existe col: Color .existe tintermedio : Tablero . (
+    # hayFiguraDeColor (t0 , posorigen , f , col)
+    # ∧ esTableroSacandoPieza (t0 , tintermedio , posorigen )
+    # ∧ esTableroPoniendoPieza (tintermedio , t1 , posdestino , f , col)
+#     # )
+
+# aux esTableroPoniendoPieza (t0 , t1 : Tablero , pos: Posición , f : Figura , col: Color ) :=
+    # tablerosCoincidenSalvoEnLaPosición (t0 , t1 , pos)
+    # ∧ hayFiguraDeColor (t1 , pos, f , col)
+
+# aux tablerosCoincidenSalvoEnLaPosici ó n (t1 , t2 : Tablero , pos : Posición ) :=
+    # para todo pos′ : Posición .(
+    # ( posiciónEnTablero (pos′ ) ∧ pos′̸ = pos) →
+    # tablerosCoincidenEnLaPosición (t1 , t2 , pos′ )
+    # )
+
+# aux tablerosCoincidenEnLaPosición (t1 , t2 : Tablero , pos : Posición ) :=
+    # t1 [pos. fila ][pos. columna ] = t2 [pos. fila ][pos. columna ]
+
+
+# explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar
+
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
-t:tablero=j.tablero
-posOponente:posicion=posición_vecina_hacia(m.origen,oponente(m.pasos[1]))   	
-piezaOponente:casilla=casilla_en_posicion(t, posOponente)
-pos:posicion=m.origen
-pieza:casilla= casilla_en_posicion(t, pos)
-pos2:Posicion= posición_vecina_hacia(pos,m.pasos[0])
-pieza2: Casilla= casilla_en_posicion(t, pos2)
-pos3 : Posicion= posición_vecina_hacia(pos2,m.pasos[1])
+    t: Tablero = j.tablero
+
+    posOponente: Posicion = posicion_vecina_hacia(m.origen,Oponente(m.pasos[1]))   # que es Oponente ???	
+    piezaOponente: Casilla = casilla_en_posicion(t, posOponente) # creo que no se lo puede inicializar afuera pues si es mover a secas no existe !!!
+
+    pos: Posicion = m.origen 
+    pieza: Casilla = casilla_en_posicion(t, pos)
+    pos2: Posicion = posicion_vecina_hacia(pos,m.pasos[0])
+    pieza2: Casilla = casilla_en_posicion(t, pos2)
+    pos3 : Posicion = posicion_vecina_hacia(pos2,m.pasos[1])
+
     if m.accion==MOVER_A_SECAS:
-    	t[pos2.fila][pos2.columna]=pieza
-    	t[pos.fila][pos.columna]=VACIO
+            t[pos2.fila][pos2.columna] = pieza
+            t[pos.fila][pos.columna] = VACIO
+
     elif m.accion == ARRASTRAR :
-    	t[pos2.fila][pos2.columna]=pieza
-    	t[pos.fila][pos.columna]=piezaOponente
-    	t[posOponente.fila][posOponente.columna]=VACIO
+            t[pos2.fila][pos2.columna]=pieza
+            t[pos.fila][pos.columna]=piezaOponente
+            t[posOponente.fila][posOponente.columna] = VACIO
+
     elif m.accion == EMPUJAR:
-    	t[pos3.fila][pos3.columna]=pieza2
-    	t[pos2.fila][pos2.columna]=pieza
-    	t[pos.fila][pos.columna]=VACIO
-j2= (tablero,j.turno,j.pasosConsumidos)
-return j2
+            t[pos3.fila][pos3.columna]=pieza2
+            t[pos2.fila][pos2.columna]=pieza
+            t[pos.fila][pos.columna]=VACIO
+
+    j2= (tablero,j.turno,j.pasosConsumidos)
+    
+    return j2
 
 #### Ejercicio 7
 
@@ -636,4 +704,5 @@ def hay_ganador_determinado(j : Juego) -> bool:
 
 def ganador_del_juego(j : Juego) -> Color:
     raise Exception("No implementado")
+
 
