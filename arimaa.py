@@ -706,6 +706,10 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
         t[pos_enemiga_origen.fila][pos_enemiga_origen.columna] = pieza
         t[pos_origen.fila][pos_origen.columna] = VACIO
 
+    # despues de realizar la accion deseada, se activan las trampas:
+
+    activar_trampas(t)
+
 # hay que revisar pasos consumidos y si se pasan o son iguales a 4 cambia el color del turno al opuesto y pone pasos consumidos en 0
 # si no se pasa se deja el mismo turno y se cambian los pasos a pasos consumidos + len (m.pasos)
 # cambiar de turno antes se podria pero esta fuera de nuestro alcance en el programa 
@@ -716,11 +720,10 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
         pasosConsumidos = 0
         j2: Juego = (t , oponente(j.turno), pasosConsumidos)
     else:
-         j2 = (t , j.turno, pasosConsumidos)
+        j2 = (t , j.turno, pasosConsumidos)
     
     return j2
 
-#### Ejercicio 7
 
 def hay_ganador_determinado(j : Juego) -> bool:
     raise Exception("No implementado")
