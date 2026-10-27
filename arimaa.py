@@ -710,8 +710,13 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 # si no se pasa se deja el mismo turno y se cambian los pasos a pasos consumidos + len (m.pasos)
 # cambiar de turno antes se podria pero esta fuera de nuestro alcance en el programa 
 
+    pasosConsumidos: int =  j.pasosConsumidos + len(m.pasos)
 
-    j2= (t , j.turno, j.pasosConsumidos)
+    if pasosConsumidos == MAX_PASOS:
+        pasosConsumidos = 0
+        j2: Juego = (t , opuesto(j.turno), pasosConsumidos)
+    else:
+         j2 = (t , j.turno, pasosConsumidos)
     
     return j2
 
