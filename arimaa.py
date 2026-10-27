@@ -714,7 +714,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
     if pasosConsumidos == MAX_PASOS:
         pasosConsumidos = 0
-        j2: Juego = (t , opuesto(j.turno), pasosConsumidos)
+        j2: Juego = (t , oponente(j.turno), pasosConsumidos)
     else:
          j2 = (t , j.turno, pasosConsumidos)
     
