@@ -599,6 +599,7 @@ def activar_trampas(t : Tablero) -> Tablero:
     return t # hay que crear un nuevo tablero?? devolvemos el mismo modificado
 
 
+
     
 #### Ejercicio 6
 
@@ -611,7 +612,14 @@ def activar_trampas(t : Tablero) -> Tablero:
 
 # aux juegoPostMovimiento (j0 , j1 : Juego , m : Movimiento ) :=
     # tableroPostMovimiento (j0 . tablero , j1 . tablero , m)
-    # ∧ j uegoConTurnoPosiblementeAvanzado (j0 , j1 , m)
+    # ∧ juegoConTurnoPosiblementeAvanzado (j0 , j1 , m)
+
+# aux juegoConTurnoPosiblementeAvanzado (j0 , j1 : Juego , m : Movimiento ) :=
+    # ( hayQueCambiarDeTurno (j0 , m) → (j1 . turno = oponente (j0 . turno ) ∧ j1 . pasosConsumidos = 0)) hay que cambiar de turno cuando el color es el del oponente y ya no se consumen mas pasos
+    # ∧ (¬hayQueCambiarDeTurno (j0 , m) → (j1 . turno = j0 . turno ∧ j1 . pasosConsumidos = j0 . pasosConsumidos + |m. pasos |))
+
+# aux hayQueCambiarDeTurno (j : Juego , m : Movimiento ) :=
+    # j . pasosConsumidos + |m. pasos | = Max_pasos
 
 # aux tableroPostMovimiento (t0 , t1 : Tablero , m : Movimiento ) :=
     # (m.acción = Mover_a_secas → tableroPostMoverASecas (t0 , t1 , m.origen , m.pasos [0]))
@@ -620,15 +628,15 @@ def activar_trampas(t : Tablero) -> Tablero:
 
 # aux tableroPostMoverASecas (t0 , t1 : Tablero , pos : Posición , d : Dirección ) :=
     # existe posdestino : Posición . existe tintermedio : Tablero . (
-    # esPosici ó nVecinaHacia (pos, d, posdestino )
+    # esPosiciónVecinaHacia (pos, d, posdestino )
     # ∧ esTableroTrasladandoPieza (t0 , tintermedio , pos, posdestino )
     # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio , t1 )
     # )
 
 # aux tableroPostArrastrar (t0 , t1 : Tablero , pos : Posición , d, darrastre : Dirección ) :=
     # existe poshueco , posenemiga : Posición . existe tintermedio1 ,tintermedio2 : Tablero . (
-    # esPosici ó nVecinaHacia (pos, d, poshueco )
-    # ∧ esPosici ó nVecinaHacia (pos, opuesta (darrastre ) , posenemiga )
+    # esPosiciónVecinaHacia (pos, d, poshueco )
+    # ∧ esPosiciónVecinaHacia (pos, opuesta (darrastre ) , posenemiga )
     # ∧ esTableroTrasladandoPieza (t0 , tintermedio1 , pos, poshueco )
     # ∧ esTableroTrasladandoPieza (tintermedio1 , tintermedio2 , posenemiga , pos)
     # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio2 , t1 )
@@ -669,31 +677,41 @@ def activar_trampas(t : Tablero) -> Tablero:
 
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
     t: Tablero = j.tablero
+    
+    pos_origen: Posicion = m.origen 
+    pieza: Casilla = casilla_en_posicion(t, pos_origen)
 
-    posOponente: Posicion = posicion_vecina_hacia(m.origen,opuesta(m.pasos[1]))   
-    piezaOponente: Casilla = casilla_en_posicion(t, posOponente) # creo que no se lo puede inicializar afuera pues si es mover a secas no existe !!!
+    pos_me_dirijo: Posicion = posicion_vecina_hacia(pos_origen, m.pasos[0])
 
-    pos: Posicion = m.origen 
-    pieza: Casilla = casilla_en_posicion(t, pos)
-    pos2: Posicion = posicion_vecina_hacia(pos,m.pasos[0])
-    pieza2: Casilla = casilla_en_posicion(t, pos2)
-    pos3 : Posicion = posicion_vecina_hacia(pos2,m.pasos[1])
 
     if m.accion==MOVER_A_SECAS:
-            t[pos2.fila][pos2.columna] = pieza
-            t[pos.fila][pos.columna] = VACIO
+        t[pos_me_dirijo.fila][pos_me_dirijo.columna] = pieza # pongo mi pieza en la casilla a la que queria moverme
+        t[pos_origen.fila][pos_origen.columna] = VACIO # vacio la que estaba 
 
     elif m.accion == ARRASTRAR :
-            t[pos2.fila][pos2.columna]=pieza
-            t[pos.fila][pos.columna]=piezaOponente
-            t[posOponente.fila][posOponente.columna] = VACIO
+        d_arrastre: Direccion = m.pasos[1]
+        pos_enemiga: Posicion = posicion_vecina_hacia(pos_origen, opuesta(d_arrastre))
+        piezaEnemiga: Casilla = t[pos_enemiga.fila][pos_enemiga.columna]
+
+        t[pos_me_dirijo.fila][pos_me_dirijo.columna] = pieza
+        t[pos_origen.fila][pos_origen.columna] = piezaEnemiga
+        t[pos_enemiga.fila][pos_enemiga.columna] = VACIO
 
     elif m.accion == EMPUJAR:
-            t[pos3.fila][pos3.columna]=pieza2
-            t[pos2.fila][pos2.columna]=pieza
-            t[pos.fila][pos.columna]=VACIO
+        pos_enemiga_origen: Posicion = posicion_vecina_hacia(m.origen, m.pasos[0])
+        piezaEnemiga: Pieza = t[pos_enemiga_origen.fila][pos_enemiga_origen.columna]
+        pos_enemiga_empuje: Posicion = posicion_vecina_hacia(pos_enemiga_origen,m.pasos[1])
 
-    j2= (tablero,j.turno,j.pasosConsumidos)
+        t[pos_enemiga_empuje.fila][pos_enemiga_empuje.columna] = piezaEnemiga
+        t[pos_enemiga_origen.fila][pos_enemiga_origen.columna] = pieza
+        t[pos_origen.fila][pos_origen.columna] = VACIO
+
+# hay que revisar pasos consumidos y si se pasan o son iguales a 4 cambia el color del turno al opuesto y pone pasos consumidos en 0
+# si no se pasa se deja el mismo turno y se cambian los pasos a pasos consumidos + len (m.pasos)
+# cambiar de turno antes se podria pero esta fuera de nuestro alcance en el programa 
+
+
+    j2= (t , j.turno, j.pasosConsumidos)
     
     return j2
 
