@@ -378,7 +378,7 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
 def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
     c_pos: Casilla = t[pos.fila][pos.columna]
     f_pos: Figura = c_pos.figura
-    col_pos: Color = f_pos.color
+    col_pos: Color = c_pos.color
     fuerza_pos: int = fuerza(figura)
     
     ds: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
@@ -630,7 +630,7 @@ def activar_trampas(t : Tablero) -> Tablero:
     # existe posdestino : Posición . existe tintermedio : Tablero . (
     # esPosiciónVecinaHacia (pos, d, posdestino )
     # ∧ esTableroTrasladandoPieza (t0 , tintermedio , pos, posdestino )
-    # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio , t1 )
+    # ∧ esTableroDespuésDeActivarTodasLasTrampas (tintermedio , t1 )
     # )
 
 # aux tableroPostArrastrar (t0 , t1 : Tablero , pos : Posición , d, darrastre : Dirección ) :=
@@ -686,7 +686,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
     if m.accion==MOVER_A_SECAS:
         t[pos_me_dirijo.fila][pos_me_dirijo.columna] = pieza # pongo mi pieza en la casilla a la que queria moverme
-        t[pos_origen.fila][pos_origen.columna] = VACIO # vacio la que estaba 
+        t[pos_origen.fila][pos_origen.columna] = CasillaVacia # vacio la que estaba 
 
     elif m.accion == ARRASTRAR :
         d_arrastre: Direccion = m.pasos[1]
@@ -695,7 +695,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
         t[pos_me_dirijo.fila][pos_me_dirijo.columna] = pieza
         t[pos_origen.fila][pos_origen.columna] = piezaEnemiga
-        t[pos_enemiga.fila][pos_enemiga.columna] = VACIO
+        t[pos_enemiga.fila][pos_enemiga.columna] = CasillaVacia
 
     elif m.accion == EMPUJAR:
         pos_enemiga_origen: Posicion = posicion_vecina_hacia(m.origen, m.pasos[0])
@@ -704,7 +704,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
         t[pos_enemiga_empuje.fila][pos_enemiga_empuje.columna] = piezaEnemiga
         t[pos_enemiga_origen.fila][pos_enemiga_origen.columna] = pieza
-        t[pos_origen.fila][pos_origen.columna] = VACIO
+        t[pos_origen.fila][pos_origen.columna] = CasillaVacia
 
     # despues de realizar la accion deseada, se activan las trampas:
 
@@ -723,7 +723,6 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
         j2 = (t , j.turno, pasosConsumidos)
     
     return j2
-
 
 #### Ejercicio 7
 
@@ -856,5 +855,6 @@ def ganador_del_juego(j : Juego) -> Color:
     
     elif esJugadorGanador(j,PLATEADO):
          return PLATEADO
+
 
 
