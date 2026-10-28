@@ -264,7 +264,9 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
 
-    return ( posicion_en_tablero(pos_vecina) and hay_casilla_vacia(t, pos_vecina) )
+    if posicion_en_tablero(pos_vecina):
+
+        return  hay_casilla_vacia(t, pos_vecina)
 
 
 
@@ -291,17 +293,18 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
 
 def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
     ds: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
-    c: Casilla = t[pos.fila][pos.columna]
-    col: Color = c.color
+  
+    if not(hay_casilla_vacia(t,pos)):
+        c: Casilla = t[pos.fila][pos.columna]
+        col: Color = c.color
 
-    for d in ds:
-        pos_vecina: Posicion = (posicion_vecina_hacia(pos,d))
-        c_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
-
-        if not ( hay_casilla_vacia(t,pos_vecina)):
-            pieza: Pieza = c_vecina
-            if pieza.color == col:
-                 return True
+        for d in ds:
+            pos_vecina: Posicion = (posicion_vecina_hacia(pos,d))
+            if posicion_en_tablero(pos_vecina) and not ( hay_casilla_vacia(t,pos_vecina)):
+                c_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
+                pieza: Casilla = c_vecina    
+                if pieza.color == col:
+                    return True
 
     return False
 
@@ -334,19 +337,19 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
     fuerza_pos: int = fuerza(figura_pos)
 
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
-    casilla_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
-    figura_vecina: Figura = casilla_vecina.figura
-    fuerza_vecina = fuerza(figura_vecina)
 
     if posicion_en_tablero(pos_vecina):
-         
-         if casilla_vecina.color == casilla_pos.color:
-              return False
-         else:
-              if  fuerza_pos > fuerza_vecina:
-                   return True
-              else:
-                   return False
+        casilla_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
+        figura_vecina: Figura = casilla_vecina.figura
+        fuerza_vecina = fuerza(figura_vecina)
+    
+        if casilla_vecina.color == casilla_pos.color:
+                return False
+        else:
+            if  fuerza_pos > fuerza_vecina:
+                return True
+            else:
+                return False
               
     return False
 
@@ -386,15 +389,16 @@ def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
 
     for d in ds:
         pos_vecina_d: Posicion = posicion_vecina_hacia(pos,d)
-        c_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
-        
-        if not(hay_casilla_vacia(t,pos_vecina_d)):
-            f_vecina_d: Figura = c_vecina_d.figura 
-            fuerza_vecina_d: int = fuerza(f_vecina_d)
+        if posicion_en_tablero(pos_vecina_d):
+            c_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
             
-            if not(hay_pieza_de_color(t, pos_vecina_d, col_pos))  :
-                if fuerza_vecina_d > fuerza_pos:
-                       return True
+            if not(hay_casilla_vacia(t,pos_vecina_d)):
+                f_vecina_d: Figura = c_vecina_d.figura 
+                fuerza_vecina_d: int = fuerza(f_vecina_d)
+                
+                if not(hay_pieza_de_color(t, pos_vecina_d, col_pos))  :
+                    if fuerza_vecina_d > fuerza_pos:
+                        return True
 
     return False 
 
@@ -448,7 +452,7 @@ def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
 # si la pieza es conejo y plateado NO puede ir al norte
 
 def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) -> bool:
-    pieza: Pieza = t[pos.fila][pos.columna]
+    pieza: Casilla = t[pos.fila][pos.columna]
     f: Figura = pieza.figura
     col: Color = pieza.color
 
@@ -590,18 +594,39 @@ def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego =
 # de ser ambas condiciones True -> vacia la casilla de pos_trampa donde estaba la pieza (entonces si Casilla = PIEZA, ahora Casilla = VACIO)
 # como solo modifica el mismo tablero ("t") dado, no debe hacer return, modifica el tablero dado
 
+def copiar_tablero(t : Tablero) -> Tablero:
+    copia : Tablero = []
+    for fila in t:
+         copia.append(fila.copy())
+    return copia
+
 def activar_trampas(t : Tablero) -> Tablero:
+    t_res: Tablero = copiar_tablero(t)
 
     for pos_trampa in POSICIONES_TRAMPA:
       # en hay pieza amiga vecina debe entrar si o si una pieza, no se si ponerlo en el mismo renglon o separarlo en 2 if's
 
-        if not(hay_casilla_vacia(t, pos_trampa)) and  not( hay_pieza_amiga_vecina( t, pos_trampa)) :
-             t[pos_trampa.fila][pos_trampa.columna] = VACIA # revisar si esta bien poner "VACIA" o "CasillaVacia"
+        if not(hay_casilla_vacia(t_res, pos_trampa)):
+            if not( hay_pieza_amiga_vecina( t_res, pos_trampa)) :
+               t_res[pos_trampa.fila][pos_trampa.columna] = VACIA # revisar si esta bien poner "VACIA" o "CasillaVacia"
 
-    return t # hay que crear un nuevo tablero?? devolvemos el mismo modificado
+    return t_res # hay que crear un nuevo tablero?? devolvemos el mismo modificado
 
 
+t1: Tablero = leer_tablero([
+              'R-e--mRr', #7
+              '------dE', #6
+              'h--Rr-RR', #5
+              'c--R-C--', #4
+              '-rCHDrr-', #3
+              '----rc--', #2
+              'h-R-M-R-', #1
+              'rr-D-dH-', #0
+              #01234567
+            ])
+t2 = activar_trampas(t1)
 
+# mostrar_tablero_en_pantalla(t2)
     
 #### Ejercicio 6
 
@@ -716,13 +741,13 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 # si no se pasa se deja el mismo turno y se cambian los pasos a pasos consumidos + len (m.pasos)
 # cambiar de turno antes se podria pero esta fuera de nuestro alcance en el programa 
 
-    pasosConsumidos: int =  j.pasosConsumidos + len(m.pasos)
+    pasosConsumidos: int =  j.pasos_consumidos + len(m.pasos)
 
     if pasosConsumidos == MAX_PASOS:
         pasosConsumidos = 0
-        j2: Juego = (t , oponente(j.turno), pasosConsumidos)
+        j2: Juego = Juego(t , oponente(j.turno), pasosConsumidos)
     else:
-        j2 = (t , j.turno, pasosConsumidos)
+        j2 = Juego(t , j.turno, pasosConsumidos)
     
     return j2
 
