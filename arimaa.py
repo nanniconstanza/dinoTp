@@ -375,10 +375,11 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
 # luego por direccion en la lista de direcciones ("ds") buscamos el vecino en esa d y comparamos colores para buscar enemigos
 # al hallar el vecino enemigo comparamos sus fuerzas, si la fuerza del enemigo es mayor a la fuerza de la figura en la pos ingresada entonces devolvemos True
 
+
 def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
     c_pos: Casilla = t[pos.fila][pos.columna]
     f_pos: Figura = c_pos.figura
-    col_pos: Color = f_pos.color
+    col_pos: Color = c_pos.color
     fuerza_pos: int = fuerza(figura)
     
     ds: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
@@ -386,13 +387,14 @@ def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
     for d in ds:
         pos_vecina_d: Posicion = posicion_vecina_hacia(pos,d)
         c_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
-        f_vecina_d: Figura = c_vecina_d.figura 
-        fuerza_vecina_d: int = fuerza(f_vecina_d)
-
-
-        if not(hay_casilla_vacia(t, pos_vecina_d)) and not(hay_pieza_de_color(t, pos_vecina_d, col_pos))  :
-            if fuerza_vecina_d > fuerza_pos:
-                 return True
+        
+        if not(hay_casilla_vacia(t,pos_vecina_d)):
+            f_vecina_d: Figura = c_vecina_d.figura 
+            fuerza_vecina_d: int = fuerza(f_vecina_d)
+            
+            if not(hay_pieza_de_color(t, pos_vecina_d, col_pos))  :
+                if fuerza_vecina_d > fuerza_pos:
+                       return True
 
     return False 
 
