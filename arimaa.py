@@ -380,7 +380,7 @@ def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
     c_pos: Casilla = t[pos.fila][pos.columna]
     f_pos: Figura = c_pos.figura
     col_pos: Color = c_pos.color
-    fuerza_pos: int = fuerza(figura)
+    fuerza_pos: int = fuerza(f_pos)
     
     ds: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
 
