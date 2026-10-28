@@ -725,10 +725,136 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
     return j2
 
 
+#### Ejercicio 7
+
+# problema hay_ganador_determinado ( in j : Juego ) : Bool {
+#     # requiere { juegoBienFormado (j) }
+#     # asegura { res = true ←→ hayGanadorDeterminado (j) }
+#     # }
+
+# aux hayGanadorDeterminado (j : Juego ) :=
+# existe col: Color . esJugadorGanador (j , col)
+
+# aux esJugadorGanador (j : Juego , col : Color ) :=
+# ( esInicioDeTurno (j , oponente (col)) ∧ reúneCondicionesDeGanar (j , col))
+# ∨ ( esInicioDeTurno (j , col) ∧ reúneCondicionesDeGanarExclusivas (j , col))
+
+
+# aux esInicioDeTurno (j : Juego , col : Color ) :=
+# j. turno = col ∧ j. pasosConsumidos = 0
+
+# aux reúneCondicionesDeGanar (j : Juego , col : Color ) :=
+# hayConejoEnFilaInicialOponente (j , col)
+# ∨ ¬hayConejoEnTablero (j , oponente (col))
+
+# aux reúneCondicionesDeGanarExclusivas (j : Juego , col : Color ) :=
+# reúneCondicionesDeGanar (col)
+# ∧ ¬reúneCondicionesDeGanar (j , oponente (col)
+
+# aux hayConejoEnTablero (j : Juego , col : Color ) :=
+# existe pos: Posición . hayFiguraDeColor (j. tablero , pos, Conejo , col)
+# aux posici ó nEnFilaInicial (pos : Posición , col : Color ) :=
+# (col = Dorado →pos. fila = 0)
+# ∧ (col = Plateado →pos. fila = 7)
+
+# aux hayConejoEnFilaInicialOponente (j : Juego , col : Color ) :=
+# existe pos: Posición .(
+# posiciónEnFilaInicial (pos, oponente (col))
+# # ∧ hayFiguraDeColor (j. tablero , pos, Conejo , col)
+# # )
+
+# aux posiciónEnFilaInicial (pos : Posición , col : Color ) :=
+# (col = Dorado →pos. fila = 0)
+# ∧ (col = Plateado →pos. fila = 7)
+
+
+#  si el turno es el color del oponente y reune condiciones para ganar el color dado  
+# ( o hay conejo en la fila inicial del oponente o el oponenete no tiene conejos)
+#  entonces gana el color dado
+#  o 
+#  si el turno es el color dado y reune condiciones para ganar el color dado  
+# ( o hay conejo en la fila inicial del oponente o el oponenete no tiene conejos) Y el oponente no tiene conejos en el tablero
+#  entonces gana el color dado
+
+def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool:
+              
+    hay_conejo: bool = False
+
+    if col == DORADO:
+        fila_objetivo: list[Casilla] = t[7]
+    else:
+        fila_objetivo: list[Casilla] = t[0] # es una fila de casillas 
+
+    for i in range(0,8,1):
+         casilla: Casilla = t[fila_objetivo][i]
+         if not(hay_casilla_vacia( t, Casilla)) :
+               figura: Figura = casilla.figura
+               color: Color = casilla.color
+               if figura == CONEJO and color == col:
+                    hay_conejo = True
+
+    return hay_conejo
+
+
+def no_hay_conejos(t: Tablero, col: Color) -> bool:
+    
+    hay_conejos: bool = False
+    
+    for fila in t:
+        for casilla in fila:
+             if not(hay_casilla_vacia( t, casilla)) :
+                figura: Figura = casilla.figura
+                color: Color = casilla.color
+                if figura == CONEJO and color == col:
+                    hay_conejos = True 
+
+    return not(hay_conejos) # si hay conejos -> da False; si no hay conejos -> da True
+
+
+def esJugadorGanador(j: Juego, col: Color) -> bool:
+
+    t: Tablero = j.tablero 
+    turno: Color = j.turno
+    esGanador: bool = False
+
+    if turno == col and j.pasos_consumidos == 0: # "es inicioDeTurno (mio)"
+         if  ( conejo_en_fila_objetivo(t, col) or  no_hay_conejos(t,oponente(col)) ) and not( conejo_en_fila_objetivo( t, oponente(col))) :
+              esGanador = True
+
+    elif turno == oponente(col) and j.pasos_consumidos == 0: # "es inicioDeTurno (oponente)"
+         if (conejo_en_fila_objetivo(t, col)) or no_hay_conejos(t,oponente(col)) :
+              esGanador = True
+
+    return esGanador
+
+
 def hay_ganador_determinado(j : Juego) -> bool:
-    raise Exception("No implementado")
+    
+    t: Tablero = j.tablero 
+    hayGanador : bool = False
+    
+    if esJugadorGanador( j, DORADO):
+        hayGanador = True 
+    
+    elif esJugadorGanador( j, PLATEADO):
+         hayGanador = True
+
+    return hayGanador
+
+
+
+# problema ganador_del_juego ( in j : Juego ) : Color {
+    # requiere { juegoBienFormado (j) }
+    # requiere { hayGanadorDeterminado (j) }
+    # asegura { esJugadorGanador (j , res) }
+    # }
 
 def ganador_del_juego(j : Juego) -> Color:
-    raise Exception("No implementado")
+
+    if esJugadorGanador(j, DORADO):
+         return DORADO
+    
+    elif esJugadorGanador(j,PLATEADO):
+         return PLATEADO
 
 
