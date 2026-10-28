@@ -199,17 +199,52 @@ class test_son_posiciones_vecinas(unittest.TestCase): #definida antes del Ej 1
         self.assertTrue(son_posiciones_vecinas(Posicion(0,0), Posicion(0, 1)))
         
 
-"""class test_casilla_en_posicion(unittest.TestCase):
+def test_son_vecinas_fuera_tablero(self):
+        self.assertTrue(son_posiciones_vecinas(Posicion(-1,-1),Posicion(-1,-2)))
 
-    def test_casilla_en_posicion(self):
+    def test_son_vecinas_diagonales(self):
+        self.assertFalse(son_posiciones_vecinas(Posicion(0,0), Posicion(1, 1)))
+
+
+class test_casilla_en_posicion(unittest.TestCase):
+
+    def test_casilla_en_posicion_figura(self):
         t = tablero_8x8_inicial_ejemplo()
         self.assertEqual(casilla_en_posicion(t, Posicion(0, 0)), Pieza(CABALLO, DORADO))
+
+    def test_casilla_en_posicion_vacia(self):
+        t = tablero_8x8_vacio()
+        self.assertEqual(casilla_en_posicion(t,Posicion(1,1)), CasillaVacia.VACIA)
+
+    def test_casilla_vacia_en_posicion_trampa(self):
+        t = tablero_8x8_vacio()
+        self.assertEqual(casilla_en_posicion(t,Posicion(2,2)), CasillaVacia.VACIA)
+
+    def test_casilla_en_posicion_figura_en_vacia(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertNotEqual(casilla_en_posicion(t,Posicion(0,0)), CasillaVacia.VACIA)
+
+    def test_casilla_vacia_comparada_con_pieza(self):
+        t = tablero_8x8_vacio()
+        self.assertNotEqual(casilla_en_posicion(t,Posicion(0,0)), Pieza(CONEJO, PLATEADO))
+
+    def test_casilla_figura_mal(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertNotEqual(casilla_en_posicion(t,Posicion(1,0)), Pieza(CABALLO, DORADO))
+
+    def test_casilla_color_mal(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertNotEqual(casilla_en_posicion(t,Posicion(1,0)), Pieza(CONEJO, PLATEADO))
 
 class test_hay_casilla_vacia(unittest.TestCase):
 
     def test_casilla_vacia(self):
         t = tablero_8x8_inicial_ejemplo()
-        self.assertTrue(hay_casilla_vacia(t, Posicion(2, 1)))
+        self.assertTrue(hay_casilla_vacia(t, Posicion(2, 0)))
+
+    def test_casilla_no_vacia(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertFalse(hay_casilla_vacia(t, Posicion(0, 0)))
 
 class test_hay_pieza_de_color(unittest.TestCase):
 
@@ -217,11 +252,23 @@ class test_hay_pieza_de_color(unittest.TestCase):
         t = tablero_8x8_inicial_ejemplo()
         self.assertTrue(hay_pieza_de_color(t, Posicion(1, 4), DORADO))
 
+    def test_hay_pieza_de_color_distinto(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertFalse(hay_pieza_de_color(t,Posicion(0,7), PLATEADO))
+
+    def test_hay_pieza_de_color_en_tablero_vacio(self):
+        t = tablero_8x8_vacio()
+        self.assertFalse(hay_pieza_de_color(t, Posicion(1, 4), DORADO))
+
 #### Ejercicio 3
 
 class test_hay_casilla_vacia_hacia(unittest.TestCase):
 
-    def test_hay_casilla_vacia_hacia(self):
+    def test_hay_casilla_vacia_hacia_ok(self):
+        t = tablero_8x8_vacio()
+        self.assertTrue(hay_casilla_vacia_hacia(t, Posicion(1, 1), NORTE))
+
+    def test_hay_casilla_vacia_hacia_mal(self):
         t = leer_tablero([
               '-r----rr', #7
               '-mrh----', #6
@@ -233,11 +280,39 @@ class test_hay_casilla_vacia_hacia(unittest.TestCase):
               'R-R---RR', #0
               #01234567
             ])
-        self.assertTrue(hay_casilla_vacia_hacia(t, Posicion(0, 0), NORTE))
+        self.assertFalse(hay_casilla_vacia_hacia(t, Posicion(0, 7), NORTE))
+
+    def test_hay_casilla_vacia_hacia_mal(self):
+        t = leer_tablero([
+              '-r----rr', #7
+              '-mrh----', #6
+              '-r---r--', #5
+              'd-EH---c', #4
+              '-M--hD-d', #3
+              '-R-e----', #2
+              '---H-R-C', #1
+              'R-R---RR', #0
+              #01234567
+            ])
+        self.assertFalse(hay_casilla_vacia_hacia(t, Posicion(1, 7), SUR))
+
+    def test_hay_casilla_vacia_hacia_desde_vacia(self):
+        t = leer_tablero([
+              '-r----rr', #7
+              '-mrh----', #6
+              '-r---r--', #5
+              'd-EH---c', #4
+              '-M--hD-d', #3
+              '-R-e----', #2
+              '---H-R-C', #1
+              'R-R---RR', #0
+              #01234567
+            ])
+        self.assertFalse(hay_casilla_vacia_hacia(t, Posicion(1, 1), NORTE))
 
 class test_hay_pieza_amiga_vecina(unittest.TestCase):
 
-    def test_hay_pieza_amiga_vecina(self):
+    def test_hay_pieza_amiga_vecina_ok(self):
         t = leer_tablero([
               'R-hRD-Rr', #7
               'M----d--', #6
@@ -251,7 +326,11 @@ class test_hay_pieza_amiga_vecina(unittest.TestCase):
             ])
         self.assertTrue(hay_pieza_amiga_vecina(t, Posicion(4, 3)))
 
-class test_hay_pieza_enemiga_mas_debil_hacia(unittest.TestCase):
+#    def test_hay_pieza_amiga_vecina_en_vacia(self): No tiene sentido hacer este test pues hacia
+#                                                    donde se busca una aliada no puede estar vacia        
+
+
+"""class test_hay_pieza_enemiga_mas_debil_hacia(unittest.TestCase):
 
     def test_hay_pieza_enemiga_mas_debil_hacia(self):
         t = leer_tablero([
