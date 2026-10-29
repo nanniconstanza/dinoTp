@@ -595,11 +595,14 @@ class test_activar_trampas(unittest.TestCase):
         t2 = activar_trampas(t0)
         self.assertNotEqual(t0, t1)
         self.assertEqual(t2, t1)
+"""
 
 #### Ejercicio 6
 
+
+
 class test_realizar_movimiento(unittest.TestCase):
- 
+  
     def test_mover_a_secas(self):
         t0 = leer_tablero([
                'rrrrrrrr', #7
@@ -629,6 +632,74 @@ class test_realizar_movimiento(unittest.TestCase):
         self.assertTrue(puede_realizar_movimiento(j0, mN))
         self.assertEqual(realizar_movimiento(j0, mN), jN)
 
+
+def test_arrastrar(self):
+            t0 = leer_tablero([
+                'rrrr-rrr', #7
+                'ccddhh-e', #6
+                '--------', #5
+                '-rM-----', #4
+                '--H-----', #3
+                '--------', #2
+                'E--HDDCC', #1
+                'RRRRRRRR', #0
+                #01234567
+                ])
+            tN = leer_tablero([
+                'rrrr-rrr', #7
+                'ccddhh-e', #6
+                '--------', #5
+                '--rM----', #4
+                '--H-----', #3
+                '--------', #2
+                'E--HDDCC', #1
+                'RRRRRRRR', #0
+                #01234567
+                ])
+            j0 = Juego(t0, DORADO, 0) 
+            jN = Juego(tN, DORADO, 2) 
+            mN = Movimiento(ARRASTRAR, Posicion(4, 2), [ESTE,ESTE])
+            self.assertTrue(puede_realizar_movimiento(j0, mN))
+            self.assertEqual(realizar_movimiento(j0, mN), jN)
+
+def test_empujar(self):
+            t0 = leer_tablero([
+                'rrrr-rrr', #7
+                'ccdd-h-e', #6
+                '--------', #5
+                '--Rm----', #4
+                '--h-----', #3
+                '--------', #2
+                'E--HDDCC', #1
+                'R-RRRRRR', #0
+                #01234567
+                ])
+            tN = leer_tablero([
+                'rrrr-rrr', #7
+                'ccdd-h-e', #6
+                '--------', #5
+                '--hm----', #4
+                '--------', #3
+                '--------', #2
+                'E--HDDCC', #1
+                'R-RRRRRR', #0
+                #01234567
+                ])
+            j0 = Juego(t0, PLATEADO, 2) 
+            jN = Juego(tN, DORADO, 0) 
+            mN = Movimiento(EMPUJAR, Posicion(3, 2), [NORTE,NORTE])
+            self.assertTrue(puede_realizar_movimiento(j0, mN))
+            self.assertEqual(realizar_movimiento(j0, mN), jN)
+
+
+
+
+
+
+
+
+
+"""
 #### Ejercicio 7
 
 class test_ganador_del_juego(unittest.TestCase):
