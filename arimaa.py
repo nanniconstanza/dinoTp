@@ -20,6 +20,13 @@ def direccion_desde_hasta(pos1 : Posicion, pos2 : Posicion) -> Direccion: # prag
 def pasar_turno(j : Juego) -> Juego: # pragma: no cover
     return Juego(j.tablero, oponente(j.turno), 0)
 
+# hacer requiere y asegura
+
+def copiar_tablero(t : Tablero) -> Tablero:
+    copia : Tablero = []
+    for fila in t:
+         copia.append(fila.copy())
+    return copia
 
 
 
@@ -263,11 +270,11 @@ def hay_pieza_de_color(t : Tablero, pos : Posicion, col : Color) -> bool:
 def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
-
-    if posicion_en_tablero(pos_vecina):
-
-        return  hay_casilla_vacia(t, pos_vecina)
-
+    
+    if posicion_en_tablero(pos_vecina):  
+        return  True
+    
+    return False
 
 
 
@@ -338,19 +345,14 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
 
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
 
-    if posicion_en_tablero(pos_vecina):
+    if posicion_en_tablero(pos_vecina) and not hay_casilla_vacia(t, pos_vecina):
         casilla_vecina: Casilla = t[pos_vecina.fila][pos_vecina.columna]
         figura_vecina: Figura = casilla_vecina.figura
         fuerza_vecina = fuerza(figura_vecina)
     
-        if casilla_vecina.color == casilla_pos.color:
-                return False
-        else:
-            if  fuerza_pos > fuerza_vecina:
+        if (casilla_vecina.color != casilla_pos.color) and (fuerza_pos > fuerza_vecina):
                 return True
-            else:
-                return False
-              
+                
     return False
 
 
@@ -389,10 +391,9 @@ def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
 
     for d in ds:
         pos_vecina_d: Posicion = posicion_vecina_hacia(pos,d)
-        if posicion_en_tablero(pos_vecina_d):
-            c_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
-            
+        if posicion_en_tablero(pos_vecina_d):            
             if not(hay_casilla_vacia(t,pos_vecina_d)):
+                c_vecina_d: Casilla = t[pos_vecina_d.fila][pos_vecina_d.columna]
                 f_vecina_d: Figura = c_vecina_d.figura 
                 fuerza_vecina_d: int = fuerza(f_vecina_d)
                 
@@ -594,12 +595,6 @@ def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego =
 # de ser ambas condiciones True -> vacia la casilla de pos_trampa donde estaba la pieza (entonces si Casilla = PIEZA, ahora Casilla = VACIO)
 # como solo modifica el mismo tablero ("t") dado, no debe hacer return, modifica el tablero dado
 
-def copiar_tablero(t : Tablero) -> Tablero:
-    copia : Tablero = []
-    for fila in t:
-         copia.append(fila.copy())
-    return copia
-
 def activar_trampas(t : Tablero) -> Tablero:
     t_res: Tablero = copiar_tablero(t)
 
@@ -703,7 +698,8 @@ t2 = activar_trampas(t1)
 # explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar
 
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
-    t: Tablero = j.tablero
+    tablero_original: Tablero = j.tablero
+    t: Tablero = copiar_tablero(tablero_original)
     
     pos_origen: Posicion = m.origen 
     pieza: Casilla = casilla_en_posicion(t, pos_origen)
@@ -726,7 +722,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
     elif m.accion == EMPUJAR:
         pos_enemiga_origen: Posicion = posicion_vecina_hacia(m.origen, m.pasos[0])
-        piezaEnemiga: Pieza = t[pos_enemiga_origen.fila][pos_enemiga_origen.columna]
+        piezaEnemiga: Casilla = t[pos_enemiga_origen.fila][pos_enemiga_origen.columna]
         pos_enemiga_empuje: Posicion = posicion_vecina_hacia(pos_enemiga_origen,m.pasos[1])
 
         t[pos_enemiga_empuje.fila][pos_enemiga_empuje.columna] = piezaEnemiga
@@ -735,7 +731,7 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
     # despues de realizar la accion deseada, se activan las trampas:
 
-    activar_trampas(t)
+    t_final: Tablero = activar_trampas(t)
 
 # hay que revisar pasos consumidos y si se pasan o son iguales a 4 cambia el color del turno al opuesto y pone pasos consumidos en 0
 # si no se pasa se deja el mismo turno y se cambian los pasos a pasos consumidos + len (m.pasos)
@@ -745,9 +741,9 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
     if pasosConsumidos == MAX_PASOS:
         pasosConsumidos = 0
-        j2: Juego = Juego(t , oponente(j.turno), pasosConsumidos)
+        j2: Juego = Juego(t_final , oponente(j.turno), pasosConsumidos)
     else:
-        j2 = Juego(t , j.turno, pasosConsumidos)
+        j2 = Juego(t_final , j.turno, pasosConsumidos)
     
     return j2
 
@@ -808,13 +804,14 @@ def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool:
     hay_conejo: bool = False
 
     if col == DORADO:
-        fila_objetivo: list[Casilla] = t[7]
-    else:
-        fila_objetivo: list[Casilla] = t[0] # es una fila de casillas 
+        fila_objetivo: list[Casilla] = 7
+    elif col == PLATEADO:
+        fila_objetivo: list[Casilla] = 0 # es una fila de casillas 
 
     for i in range(0,8,1):
-         casilla: Casilla = t[fila_objetivo][i]
-         if not(hay_casilla_vacia( t, Casilla)) :
+         pos: Posicion = Posicion(fila_objetivo, i)
+         if not(hay_casilla_vacia( t, pos)) :
+               casilla: Casilla = t[fila_objetivo][i]
                figura: Figura = casilla.figura
                color: Color = casilla.color
                if figura == CONEJO and color == col:
@@ -827,9 +824,11 @@ def no_hay_conejos(t: Tablero, col: Color) -> bool:
     
     hay_conejos: bool = False
     
-    for fila in t:
-        for casilla in fila:
-             if not(hay_casilla_vacia( t, casilla)) :
+    for f in range(0,8,1):
+        for c in range(0,8,1):
+            pos: Posicion = Posicion(f,c)
+            if not(hay_casilla_vacia( t, pos)) :
+                casilla: Casilla = t[f][c]
                 figura: Figura = casilla.figura
                 color: Color = casilla.color
                 if figura == CONEJO and color == col:
