@@ -271,7 +271,7 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
     
-    if posicion_en_tablero(pos_vecina):  
+    if posicion_en_tablero(pos_vecina) and hay_casilla_vacia(pos_vecina):  
         return  True
     
     return False
