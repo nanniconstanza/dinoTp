@@ -202,7 +202,7 @@ class test_son_posiciones_vecinas(unittest.TestCase): #definida antes del Ej 1
 def test_son_vecinas_fuera_tablero(self):
         self.assertTrue(son_posiciones_vecinas(Posicion(-1,-1),Posicion(-1,-2)))
 
-    def test_son_vecinas_diagonales(self):
+def test_son_vecinas_diagonales(self):
         self.assertFalse(son_posiciones_vecinas(Posicion(0,0), Posicion(1, 1)))
 
 
@@ -544,6 +544,7 @@ class test_hay_pieza_congelada(unittest.TestCase):
                 #01234567
             ])
         self.assertFalse(hay_pieza_congelada(t, Posicion(3, 3)))
+
 """
 #### Ejercicio 4
 
@@ -595,10 +596,9 @@ class test_activar_trampas(unittest.TestCase):
         t2 = activar_trampas(t0)
         self.assertNotEqual(t0, t1)
         self.assertEqual(t2, t1)
-"""
 
 #### Ejercicio 6
-
+"""
 
 
 class test_realizar_movimiento(unittest.TestCase):
@@ -633,7 +633,7 @@ class test_realizar_movimiento(unittest.TestCase):
         self.assertEqual(realizar_movimiento(j0, mN), jN)
 
 
-def test_arrastrar(self):
+    def test_arrastrar(self):
             t0 = leer_tablero([
                 'rrrr-rrr', #7
                 'ccddhh-e', #6
@@ -662,7 +662,7 @@ def test_arrastrar(self):
             self.assertTrue(puede_realizar_movimiento(j0, mN))
             self.assertEqual(realizar_movimiento(j0, mN), jN)
 
-def test_empujar(self):
+    def test_empujar(self):
             t0 = leer_tablero([
                 'rrrr-rrr', #7
                 'ccdd-h-e', #6
@@ -690,16 +690,9 @@ def test_empujar(self):
             mN = Movimiento(EMPUJAR, Posicion(3, 2), [NORTE,NORTE])
             self.assertTrue(puede_realizar_movimiento(j0, mN))
             self.assertEqual(realizar_movimiento(j0, mN), jN)
-
-
-
-
-
-
-
-
-
+            
 """
+
 #### Ejercicio 7
 
 class test_ganador_del_juego(unittest.TestCase):
@@ -722,4 +715,4 @@ class test_ganador_del_juego(unittest.TestCase):
 """
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
