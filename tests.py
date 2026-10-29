@@ -329,10 +329,51 @@ class test_hay_pieza_amiga_vecina(unittest.TestCase):
 #    def test_hay_pieza_amiga_vecina_en_vacia(self): No tiene sentido hacer este test pues hacia
 #                                                    donde se busca una aliada no puede estar vacia        
 
+    def test_hay_pieza_amiga_vecina_ok_dos(self):
+        t = leer_tablero([
+              'R-hRD-Rr', #7
+              'M----d--', #6
+              '-h-rrCR-', #5
+              'R-rcE---', #4
+              '--drRR--', #3
+              '-HD-H--m', #2
+              '--r-RCc-', #1
+              're---r--', #0
+              #01234567
+            ])
+        self.assertTrue(hay_pieza_amiga_vecina(t,Posicion(7, 0)))
 
-"""class test_hay_pieza_enemiga_mas_debil_hacia(unittest.TestCase):
+    def test_no_hay_pieza_amiga_vecina(self):
+        t = leer_tablero([
+            'R-hRD-Rr', #7
+            'M----d--', #6
+            '-h-rrCR-', #5
+            'R-rcE---', #4
+            '--drRR--', #3
+            '-HD-H--m', #2
+            '--r-RCc-', #1
+            're---r--', #0
+            #01234567
+            ])
+        self.assertFalse(hay_pieza_amiga_vecina(t,Posicion(2, 7)))
 
-    def test_hay_pieza_enemiga_mas_debil_hacia(self):
+    def test_no_hay_pieza_amiga_vecina_dos(self):
+        t = leer_tablero([
+            'R-hRD-Rr', #7
+            'M----d--', #6
+            '-h-rrCR-', #5
+            'R-rcE---', #4
+            '--drRR--', #3
+            '-HD-H--m', #2
+            '--r-RCc-', #1
+            're---r--', #0
+            #01234567
+            ])
+        self.assertFalse(hay_pieza_amiga_vecina(t,Posicion(7, 7)))
+
+class test_hay_pieza_enemiga_mas_debil_hacia(unittest.TestCase):
+
+    def test_hay_pieza_enemiga_mas_debil_hacia_ok(self):
         t = leer_tablero([
               '--Hdm---', #7
               'r--HhC--', #6
@@ -346,9 +387,65 @@ class test_hay_pieza_amiga_vecina(unittest.TestCase):
             ])
         self.assertTrue(hay_pieza_enemiga_mas_debil_hacia(t, Posicion(1, 3), OESTE))
 
+    def test_hay_pieza_enemiga_mas_debil_hacia_fuera(self):
+        t = leer_tablero([
+                '--Hdm---', #7
+                'r--HhC--', #6
+                'e---R-C-', #5
+                'ME--d---', #4
+                'h--RDcRr', #3
+                'R-R-r--r', #2
+                '-RRcrRD-', #1
+                '--r---rr', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_enemiga_mas_debil_hacia(t, Posicion(0, 2), ESTE))
+
+    def test_hay_pieza_enemiga_mas_debil_hacia_vacia(self):
+        t = leer_tablero([
+                '--Hdm---', #7
+                'r--HhC--', #6
+                'e---R-C-', #5
+                'ME--d---', #4
+                'h--RDcRr', #3
+                'R-R-r--r', #2
+                '-RRcrRD-', #1
+                '--r---rr', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_enemiga_mas_debil_hacia(t, Posicion(0, 2), OESTE))
+
+    def test_hay_pieza_enemiga_mas_debil_hacia_mismo_color(self):
+        t = leer_tablero([
+                '--Hdm---', #7
+                'r--HhC--', #6
+                'e---R-C-', #5
+                'ME--d---', #4
+                'h--RDcRr', #3
+                'R-R-r--r', #2
+                '-RRcrRD-', #1
+                '--r---rr', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_enemiga_mas_debil_hacia(t, Posicion(4, 0), ESTE))
+
+    def test_hay_pieza_enemiga_mas_debil_hacia_misma_fuerza(self):
+        t = leer_tablero([
+                '--Hdm---', #7
+                'r--HhC--', #6
+                'e---R-C-', #5
+                'ME--d---', #4
+                'h--RDcRr', #3
+                'R-R-r--r', #2
+                '-RRcrRD-', #1
+                '--r---rr', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_enemiga_mas_debil_hacia(t, Posicion(3, 6), ESTE))
+
 class test_hay_pieza_enemiga_mas_fuerte_vecina(unittest.TestCase):
 
-    def test_hay_pieza_enemiga_mas_fuerte_vecina(self):
+    def test_hay_pieza_enemiga_mas_fuerte_vecina_ok(self):
         t = leer_tablero([
               'R-e--mRr', #7
               '------dE', #6
@@ -362,9 +459,37 @@ class test_hay_pieza_enemiga_mas_fuerte_vecina(unittest.TestCase):
             ])
         self.assertTrue(hay_pieza_enemiga_mas_fuerte_vecina(t, Posicion(3, 1)))
 
+    def test_hay_pieza_enemiga_mas_fuerte_vecina_falso(self):
+            t = leer_tablero([
+                  'R-e--mRr', #7
+                  '------dE', #6
+                  'h--Rr-RR', #5
+                  'c--R-C--', #4
+                  '-rCHDrr-', #3
+                  '----rc--', #2
+                  'h-R-M-R-', #1
+                  'rr-D-dH-', #0
+                  #01234567
+                ])
+            self.assertFalse(hay_pieza_enemiga_mas_fuerte_vecina(t, Posicion(0, 6)))
+
+    def test_hay_pieza_enemiga_mas_fuerte_vecina_ok_dos(self):
+                t = leer_tablero([
+                      'R-e--mRr', #7
+                      '------dE', #6
+                      'h--Rr-RR', #5
+                      'c--R-C--', #4
+                      '-rCHDrr-', #3
+                      '----rc--', #2
+                      'h-R-M-R-', #1
+                      'rr-D-dH-', #0
+                      #01234567
+                    ])
+                self.assertTrue(hay_pieza_enemiga_mas_fuerte_vecina(t, Posicion(7, 7)))
+
 class test_hay_pieza_congelada(unittest.TestCase):
 
-    def test_hay_pieza_congelada(self):
+    def test_hay_pieza_congelada_ok(self):
         t = leer_tablero([
               '--d--H-D', #7
               '-hMc--r-', #6
@@ -378,6 +503,48 @@ class test_hay_pieza_congelada(unittest.TestCase):
             ])
         self.assertTrue(hay_pieza_congelada(t, Posicion(6, 1)))
 
+    def test_hay_pieza_congelada_en_vacia(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_congelada(t, Posicion(0, 0)))
+
+    def test_hay_pieza_congelada_no_hay_enemiga(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_congelada(t, Posicion(3, 2)))
+
+    def test_hay_pieza_congelada_hay_aliada(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(hay_pieza_congelada(t, Posicion(3, 3)))
+"""
 #### Ejercicio 4
 
 class test_puede_realizar_movimiento(unittest.TestCase):
