@@ -271,7 +271,7 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
     
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
     
-    if posicion_en_tablero(pos_vecina) and hay_casilla_vacia(t,pos_vecina):  
+    if posicion_en_tablero(pos_vecina) and hay_casilla_vacia(t, pos_vecina):  
         return  True
     
     return False
@@ -502,22 +502,25 @@ def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
     d: Direccion = m.pasos[0]
 
     puedeRealizarAccion: bool = False
-    
-    if accion == MOVER_A_SECAS and hay_casilla_vacia_hacia(t, pos, d):
-        puedeRealizarAccion = True
+    pos_hacia: Posicion = posicion_vecina_hacia(pos,d)
 
-    elif accion == ARRASTRAR :
-        d_arrastre: Accion = m.pasos[1]
-        if hay_casilla_vacia_hacia(t, pos, d) and hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)):
-              puedeRealizarAccion = True
+    if posicion_en_tablero(pos_hacia):
+        
+        if accion == MOVER_A_SECAS and hay_casilla_vacia_hacia(t, pos, d):
+            puedeRealizarAccion = True
 
-    else:
-        d_empuje: Accion = m.pasos[1]
-        pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
-
-        if not(hay_casilla_vacia(t, pos_vecina)):
-             if hay_pieza_enemiga_mas_debil_hacia(t,pos,d) and hay_casilla_vacia_hacia(t, pos_vecina, d_empuje):
+        elif accion == ARRASTRAR :
+            d_arrastre: Accion = m.pasos[1]
+            if hay_casilla_vacia_hacia(t, pos, d) and hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)):
                 puedeRealizarAccion = True
+
+        else:
+            d_empuje: Accion = m.pasos[1]
+            pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
+
+            if not(hay_casilla_vacia(t, pos_vecina)):
+                if hay_pieza_enemiga_mas_debil_hacia(t,pos,d) and hay_casilla_vacia_hacia(t, pos_vecina, d_empuje):
+                    puedeRealizarAccion = True
 
     return puedeRealizarAccion 
 
@@ -545,8 +548,7 @@ def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego =
     pos: Posicion = m.origen  # m.origen -> (fila_origen, columna_origen)
     ds: list[Direccion] = m.pasos
 
-
-    if hay_pieza_de_color(t, pos, turno) and not(hay_pieza_congelada(t, pos)) :
+    if not(hay_casilla_vacia(t,pos)) and (hay_pieza_de_color(t, pos, turno)) and (not(hay_pieza_congelada(t, pos))) :
            if direcciónDeMovimientoHabilitada(t, pos, ds[0]) and ( ( j.pasos_consumidos + len(ds)) <= MAX_PASOS) and puedeRealizarAcción(t,m) :
                 return True 
                      
