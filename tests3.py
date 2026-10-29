@@ -266,3 +266,111 @@ class test_hay_casilla_vacia_hacia(unittest.TestCase):
     def test_hay_casilla_vacia_hacia_ok(self):
         t = tablero_8x8_vacio()
         self.assertTrue(hay_casilla_vacia_hacia(t, Posicion(0, 0), NORTE))
+
+### Ejercicio 4 
+
+class test_direcciónDeMovimientoHabilitada(unittest.TestCase):
+    
+    def direcciónDeMovimientoHabilitada_vacia(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(0, 0), NORTE))
+
+    def direcciónDeMovimientoHabilitada_false_uno(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(6, 6), SUR))
+
+    def direcciónDeMovimientoHabilitada_false_dos(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(2, 3), NORTE))
+
+    def direcciónDeMovimientoHabilitada_ok(self):
+        t = leer_tablero([
+            '--d--H-D', #7
+            '-hMc--r-', #6
+            '--r--C-H', #5
+            '--------', #4
+            '-CeD----', #3
+            '---R----', #2
+            '--------', #1
+            '--------', #0
+            #01234567
+        ])
+        self.assertTrue(direcciónDeMovimientoHabilitada(t, Posicion(2, 3), OESTE))
+
+
+class test_puedeRealizarAcción(unittest.TestCase):
+    def puedeRealizarAcción_posicion_fuera (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = (ARRASTRAR, Posicion(-1, -1), [NORTE, ESTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def puedeRealizarAcción_hacia_vacia (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = (ARRASTRAR, Posicion(0,0), [SUR, ESTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def puedeRealizarAcción_ (self):
+            t = leer_tablero([
+            '--d--H-D', #7
+            '-hMc--r-', #6
+            '--r--C-H', #5
+            '--------', #4
+            '-CeD----', #3
+            '---R----', #2
+            '--------', #1
+            '--------', #0
+            #01234567
+            ])
+            m: Movimiento = (ARRASTRAR, Posicion(0,0), [NORTE, ESTE])
+            self.assertTrue(puedeRealizarAcción(t, m))
+
