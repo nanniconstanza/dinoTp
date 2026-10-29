@@ -132,9 +132,8 @@ def movimiento_bien_formado(m : Movimiento) -> bool:
         
         elif m.accion == EMPUJAR and len(m.pasos) == 2: 
                 return True
-        
-    else:
-         return False
+    
+    return False
 
 
 
@@ -453,18 +452,20 @@ def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
 # si la pieza es conejo y plateado NO puede ir al norte
 
 def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) -> bool:
+
+    if (hay_casilla_vacia(t,pos)):
+        return False
+
     pieza: Casilla = t[pos.fila][pos.columna]
     f: Figura = pieza.figura
     col: Color = pieza.color
 
-    habilitado: bool = True
-
     if (f == CONEJO) and (col == DORADO) and (d == SUR):
-        habilitado = False
+            return  False
     elif (f == CONEJO) and (col == PLATEADO) and (d == NORTE):
-        habilitado = False
+            return  False
 
-    return habilitado 
+    return True 
 
 #definimos la funcion auxiliar: puedeRealizarAcción
 
@@ -497,36 +498,36 @@ def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) ->
 # si no esta vacia entonces revisa si es mas debil Y si hay una casilla vacia a donde voy a empujar a la otra pieza ("d_empuje")  -> se puede (=True)
 
 def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
+    
     pos: Posicion = m.origen 
     accion: Accion = m.accion
     d: Direccion = m.pasos[0]
 
-    puedeRealizarAccion: bool = False
     pos_hacia: Posicion = posicion_vecina_hacia(pos,d)
 
     if posicion_en_tablero(pos_hacia):
         
-        if accion == MOVER_A_SECAS and hay_casilla_vacia_hacia(t, pos, d):
-            puedeRealizarAccion = True
+        if accion == MOVER_A_SECAS:
+            return hay_casilla_vacia_hacia(t, pos, d)
 
         elif accion == ARRASTRAR :
-            d_arrastre: Accion = m.pasos[1]
-            pos_enemiga: Posicion = posicion_vecina_hacia(pos,opuesta(d_arrastre))
-
-            if posicion_en_tablero(pos_enemiga):
-                if hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)):
-                    puedeRealizarAccion = True
+            d_arrastre: Direccion = m.pasos[1]
+            
+            return  (hay_casilla_vacia_hacia(t,pos,d)) and (hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)))
+                 
 
         else:
-            d_empuje: Accion = m.pasos[1]
-            pos_enemiga: Posicion = pos_hacia
-            pos_empuje: Posicion = posicion_vecina_hacia(pos_enemiga,d_empuje)
+            d_empuje: Direccion = m.pasos[1]
+            pos_enemiga_empuje: Posicion = pos_hacia
+            pos_empuje: Posicion = posicion_vecina_hacia(pos_enemiga_empuje,d_empuje)
 
-            if posicion_en_tablero(pos_empuje):   
-                    if hay_casilla_vacia_hacia(t, pos_enemiga, d_empuje) and hay_pieza_enemiga_mas_debil_hacia(t,pos,d):
-                        puedeRealizarAccion = True
+            if not(posicion_en_tablero(pos_empuje)):   
+                    return False
+            
+            return  (  (hay_pieza_enemiga_mas_debil_hacia(t,pos,d)) and (hay_casilla_vacia_hacia(t, pos_enemiga_empuje, d_empuje))  )
+                      
 
-    return puedeRealizarAccion 
+    return False
 
 # problema puede_realizar_movimiento ( in j : Juego , in m : Movimiento ) : Bool {
     # requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
@@ -614,18 +615,18 @@ def activar_trampas(t : Tablero) -> Tablero:
     return t_res # hay que crear un nuevo tablero?? devolvemos el mismo modificado
 
 
-t1: Tablero = leer_tablero([
-              'R-e--mRr', #7
-              '------dE', #6
-              'h--Rr-RR', #5
-              'c--R-C--', #4
-              '-rCHDrr-', #3
-              '----rc--', #2
-              'h-R-M-R-', #1
-              'rr-D-dH-', #0
-              #01234567
-            ])
-t2 = activar_trampas(t1)
+# t1: Tablero = leer_tablero([
+#               'R-e--mRr', #7
+#               '------dE', #6
+#               'h--Rr-RR', #5
+#               'c--R-C--', #4
+#               '-rCHDrr-', #3
+#               '----rc--', #2
+#               'h-R-M-R-', #1
+#               'rr-D-dH-', #0
+#               #01234567
+#             ])
+# t2 = activar_trampas(t1)
 
 # mostrar_tablero_en_pantalla(t2)
     
@@ -720,18 +721,18 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
     elif m.accion == ARRASTRAR :
         d_arrastre: Direccion = m.pasos[1]
         pos_enemiga: Posicion = posicion_vecina_hacia(pos_origen, opuesta(d_arrastre))
-        piezaEnemiga: Casilla = t[pos_enemiga.fila][pos_enemiga.columna]
+        piezaEnemiga_arrastre: Casilla = t[pos_enemiga.fila][pos_enemiga.columna]
 
         t[pos_me_dirijo.fila][pos_me_dirijo.columna] = pieza
-        t[pos_origen.fila][pos_origen.columna] = piezaEnemiga
+        t[pos_origen.fila][pos_origen.columna] = piezaEnemiga_arrastre
         t[pos_enemiga.fila][pos_enemiga.columna] = VACIA
 
     elif m.accion == EMPUJAR:
         pos_enemiga_origen: Posicion = posicion_vecina_hacia(m.origen, m.pasos[0])
-        piezaEnemiga: Casilla = t[pos_enemiga_origen.fila][pos_enemiga_origen.columna]
+        piezaEnemiga_empuje: Casilla = t[pos_enemiga_origen.fila][pos_enemiga_origen.columna]
         pos_enemiga_empuje: Posicion = posicion_vecina_hacia(pos_enemiga_origen,m.pasos[1])
 
-        t[pos_enemiga_empuje.fila][pos_enemiga_empuje.columna] = piezaEnemiga
+        t[pos_enemiga_empuje.fila][pos_enemiga_empuje.columna] = piezaEnemiga_empuje
         t[pos_enemiga_origen.fila][pos_enemiga_origen.columna] = pieza
         t[pos_origen.fila][pos_origen.columna] = VACIA
 
@@ -810,16 +811,19 @@ def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool:
     hay_conejo: bool = False
 
     if col == DORADO:
-        fila_objetivo: list[Casilla] = 7
+        fila_objetivo: int = 7
+
     elif col == PLATEADO:
-        fila_objetivo: list[Casilla] = 0 # es una fila de casillas 
+        fila_objetivo: int = 0 
 
     for i in range(0,8,1):
          pos: Posicion = Posicion(fila_objetivo, i)
+
          if not(hay_casilla_vacia( t, pos)) :
                casilla: Casilla = t[fila_objetivo][i]
                figura: Figura = casilla.figura
                color: Color = casilla.color
+
                if figura == CONEJO and color == col:
                     hay_conejo = True
 
@@ -842,36 +846,32 @@ def no_hay_conejos(t: Tablero, col: Color) -> bool:
 
     return not(hay_conejos) # si hay conejos -> da False; si no hay conejos -> da True
 
+def reune_condiciones_de_ganar(t: Tablero, col: Color)-> bool:
+     
+     return (  (conejo_en_fila_objetivo(t, col) or (no_hay_conejos(t, oponente(col))))  )
+
 
 def esJugadorGanador(j: Juego, col: Color) -> bool:
 
     t: Tablero = j.tablero 
     turno: Color = j.turno
-    esGanador: bool = False
 
-    if turno == col and j.pasos_consumidos == 0: # "es inicioDeTurno (mio)"
-         if  ( conejo_en_fila_objetivo(t, col) or  no_hay_conejos(t,oponente(col)) ) and not( conejo_en_fila_objetivo( t, oponente(col))) :
-              esGanador = True
 
-    elif turno == oponente(col) and j.pasos_consumidos == 0: # "es inicioDeTurno (oponente)"
-         if (conejo_en_fila_objetivo(t, col)) or no_hay_conejos(t,oponente(col)) :
-              esGanador = True
+    if j.pasos_consumidos != 0:
+         return False
+    
+    elif turno == oponente(col):
+         return reune_condiciones_de_ganar(t,col)
 
-    return esGanador
+    else: 
+        return ( (reune_condiciones_de_ganar(t,col)) and ( not (reune_condiciones_de_ganar(t, oponente(col)))) )
+
+    
 
 
 def hay_ganador_determinado(j : Juego) -> bool:
-    
-    t: Tablero = j.tablero 
-    hayGanador : bool = False
-    
-    if esJugadorGanador( j, DORADO):
-        hayGanador = True 
-    
-    elif esJugadorGanador( j, PLATEADO):
-         hayGanador = True
 
-    return hayGanador
+    return ( (esJugadorGanador(j, DORADO)) or (esJugadorGanador(j,PLATEADO)) )
 
 
 
@@ -886,7 +886,5 @@ def ganador_del_juego(j : Juego) -> Color:
     if esJugadorGanador(j, DORADO):
          return DORADO
     
-    elif esJugadorGanador(j,PLATEADO):
-         return PLATEADO
-
+    return PLATEADO
 
