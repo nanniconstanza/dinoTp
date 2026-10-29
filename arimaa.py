@@ -511,16 +511,20 @@ def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
 
         elif accion == ARRASTRAR :
             d_arrastre: Accion = m.pasos[1]
-            if hay_casilla_vacia_hacia(t, pos, d) and hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)):
-                puedeRealizarAccion = True
+            pos_enemiga: Posicion = posicion_vecina_hacia(pos,opuesta(d_arrastre))
+
+            if posicion_en_tablero(pos_enemiga):
+                if hay_pieza_enemiga_mas_debil_hacia(t, pos, opuesta(d_arrastre)):
+                    puedeRealizarAccion = True
 
         else:
             d_empuje: Accion = m.pasos[1]
-            pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
+            pos_enemiga: Posicion = pos_hacia
+            pos_empuje: Posicion = posicion_vecina_hacia(pos_enemiga,d_empuje)
 
-            if not(hay_casilla_vacia(t, pos_vecina)):
-                if hay_pieza_enemiga_mas_debil_hacia(t,pos,d) and hay_casilla_vacia_hacia(t, pos_vecina, d_empuje):
-                    puedeRealizarAccion = True
+            if posicion_en_tablero(pos_empuje):   
+                    if hay_casilla_vacia_hacia(t, pos_enemiga, d_empuje) and hay_pieza_enemiga_mas_debil_hacia(t,pos,d):
+                        puedeRealizarAccion = True
 
     return puedeRealizarAccion 
 
