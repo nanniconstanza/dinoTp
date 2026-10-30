@@ -126,9 +126,6 @@ class test_movimiento_bien_formado(unittest.TestCase):
     def test_posicion_fuera(self):
         self.assertFalse(movimiento_bien_formado(Movimiento(MOVER_A_SECAS, Posicion(-1, -1), [NORTE])))
 
-# def test_accion_mal(self):
-#   self.assertFalse(movimiento_bien_formado(Movimiento(cualquiercosa, Posicion(0, 1), [SUR])))
-# me da error cuando le doy otra cosa que no sea un movimiento valido. 
     def test_mover_a_secas_mal(self):
         self.assertFalse(movimiento_bien_formado(Movimiento(MOVER_A_SECAS, Posicion(0, 1), [ ])))
 
@@ -152,10 +149,6 @@ class test_juego_bien_formado(unittest.TestCase):
     def test_juego_mal_tablero(self):
         j = Juego(tablero_9x8_vacio(),PLATEADO,3)
         self.assertFalse(juego_bien_formado(j))
-
-    # def test_juego_mal_turno(self):
-    #     j = Juego(tablero_8x8_inicial_ejemplo(), cualquiercosa, 3)
-    #    self.assertFalse(juego_bien_formado(j))       idem linea 129, me da error con un color que no reconoce en vez de False
 
     def test_juego_mas_pasos_cosumidos(self):
         j = Juego(tablero_8x8_inicial_ejemplo(), PLATEADO, 4)
@@ -545,32 +538,15 @@ class test_hay_pieza_congelada(unittest.TestCase):
             ])
         self.assertFalse(hay_pieza_congelada(t, Posicion(3, 3)))
 
-"""
-#### Ejercicio 4
+### Ejercicio 4 
 
-class test_puede_realizar_movimiento(unittest.TestCase):
 
-    def test_mover_a_secas_ok(self):
-        t = leer_tablero([
-              '--eMr---', #7
-              '--------', #6
-              '-R----r-', #5
-              '--------', #4
-              '--mMd---', #3
-              '---D----', #2
-              '--------', #1
-              '-mD--mDR', #0
-              #01234567
-            ])
-        j = Juego(t, PLATEADO, 0)
-        m = Movimiento(MOVER_A_SECAS, Posicion(0, 1), [NORTE])
-        self.assertTrue(puede_realizar_movimiento(j, m))
 
 #### Ejercicio 5
 
 class test_activar_trampas(unittest.TestCase):
 
-    def test_activar_trampas_ok(self):
+    def test_activar_trampas_todas(self):
         t0 = leer_tablero([
                '-eRD--rd', #7
                '--------', #6
@@ -597,8 +573,63 @@ class test_activar_trampas(unittest.TestCase):
         self.assertNotEqual(t0, t1)
         self.assertEqual(t2, t1)
 
+    def test_no_activar_trampas(self):
+        t0 = leer_tablero([
+               '-eRD--rd', #7
+               '--------', #6
+               'H-------', #5
+               '-H--r-Cr', #4
+               'R-------', #3
+               'R-------', #2
+               'R-------', #1
+               'c-D---R-', #0
+               #01234567
+             ])
+        t1 = leer_tablero([
+               '-eRD--rd', #7
+               '--------', #6
+               'H-------', #5
+               '-H--r-Cr', #4
+               'R-------', #3
+               'R-------', #2
+               'R-------', #1
+               'c-D---R-', #0
+               #01234567
+             ])
+        t2 = activar_trampas(t0)
+        self.assertEqual(t0, t1)
+        self.assertEqual(t2, t1)
+        
+    def test_activar_trampas_una(self):
+        t0 = leer_tablero([
+               '-eRD--rd', #7
+               '-----R--', #6
+               'H----E--', #5
+               '-H----Cr', #4
+               'R-------', #3
+               'R----m--', #2
+               'R---r---', #1
+               'c-D---R-', #0
+               #01234567
+             ])
+        t1 = leer_tablero([
+               '-eRD--rd', #7
+               '-----R--', #6
+               'H----E--', #5
+               '-H----Cr', #4
+               'R-------', #3
+               'R-------', #2
+               'R---r---', #1
+               'c-D---R-', #0
+               #01234567
+             ])
+        t2 = activar_trampas(t0)
+        self.assertNotEqual(t0, t1)
+        self.assertEqual(t2, t1)
+        
+
+
 #### Ejercicio 6
-"""
 
 
 class test_realizar_movimiento(unittest.TestCase):
