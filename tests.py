@@ -540,7 +540,221 @@ class test_hay_pieza_congelada(unittest.TestCase):
 
 ### Ejercicio 4 
 
+class test_direcciónDeMovimientoHabilitada(unittest.TestCase):
+    
+    def test_direcciónDeMovimientoHabilitada_vacia(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(0, 0), NORTE))
 
+    def test_direcciónDeMovimientoHabilitada_false_uno(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(6, 6), NORTE))
+
+    def test_direcciónDeMovimientoHabilitada_false_dos(self):
+        t = leer_tablero([
+                '--d--H-D', #7
+                '-hMc--r-', #6
+                '--r--C-H', #5
+                '--------', #4
+                '-CeD----', #3
+                '---R----', #2
+                '--------', #1
+                '--------', #0
+                #01234567
+            ])
+        self.assertFalse(direcciónDeMovimientoHabilitada(t, Posicion(2, 3), SUR))
+
+    def test_direcciónDeMovimientoHabilitada_ok(self):
+        t = leer_tablero([
+            '--d--H-D', #7
+            '-hMc--r-', #6
+            '--r--C-H', #5
+            '--------', #4
+            '-CeD----', #3
+            '---R----', #2
+            '--------', #1
+            '--------', #0
+            #01234567
+        ])
+        self.assertTrue(direcciónDeMovimientoHabilitada(t, Posicion(2, 3), OESTE))
+
+
+class test_puedeRealizarAcción(unittest.TestCase):
+
+    def test_puedeRealizarAcción_desde_fuera (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(ARRASTRAR, Posicion(-1, -1), [NORTE, ESTE])
+        self.assertFalse(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_hacia_fuera (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(ARRASTRAR, Posicion(0,0), [SUR, ESTE])
+        self.assertFalse(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_mover_a_secas_ok (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(MOVER_A_SECAS, Posicion(3, 3), [NORTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_mover_a_secas_ok (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(MOVER_A_SECAS, Posicion(3, 3), [NORTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_arrastrar_ok (self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(ARRASTRAR, Posicion(3, 2), [NORTE, OESTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_mover_a_secas_ok(self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(EMPUJAR, Posicion(3, 2), [ESTE, ESTE])
+        self.assertTrue(puedeRealizarAcción(t, m))
+
+    def test_puedeRealizarAcción_empujar_fuera(self):
+        t = leer_tablero([
+        '--d--H-D', #7
+        '-hMc--r-', #6
+        '--r--C-H', #5
+        '--------', #4
+        '-CeD----', #3
+        '---R----', #2
+        '--------', #1
+        '--------', #0
+        #01234567
+        ])
+        m: Movimiento = Movimiento(EMPUJAR, Posicion(6, 2), [NORTE, NORTE])
+        self.assertFalse(puedeRealizarAcción(t, m))
+
+class test_puede_realizar_movimiento(unittest.TestCase):
+
+    def test_mover_a_secas_ok(self):
+        t = leer_tablero([
+              '--eMr---', #7
+              '--------', #6
+              '-R----r-', #5
+              '--------', #4
+              '--mMd---', #3
+              '---D----', #2
+              '--------', #1
+              '-mD--mDR', #0
+              #01234567
+            ])
+        j = Juego(t, PLATEADO, 0)
+        m = Movimiento(MOVER_A_SECAS, Posicion(0, 1), [NORTE])
+        self.assertTrue(puede_realizar_movimiento(j, m))
+
+    def test_en_vacia(self):
+        t = leer_tablero([
+                '--eMr---', #7
+                '--------', #6
+                '-R----r-', #5
+                '--------', #4
+                '--mMd---', #3
+                '---D----', #2
+                '--------', #1
+                '-mD--mDR', #0
+                #01234567
+            ])
+        j = Juego(t, PLATEADO, 0)
+        m = Movimiento(MOVER_A_SECAS, Posicion(0, 0), [NORTE])
+        self.assertFalse(puede_realizar_movimiento(j, m))
+
+    def test_mover_a_secas_agota_movimientos(self):
+        t = leer_tablero([
+                '--eMr---', #7
+                '--------', #6
+                '-R----r-', #5
+                '--------', #4
+                '--mMd---', #3
+                '---D----', #2
+                '--------', #1
+                '-mD--mDR', #0
+                #01234567
+            ])
+        j = Juego(t, PLATEADO, 4)
+        m = Movimiento(MOVER_A_SECAS, Posicion(0, 1), [NORTE])
+        self.assertFalse(puede_realizar_movimiento(j, m))
 
 #### Ejercicio 5
 
