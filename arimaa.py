@@ -20,9 +20,17 @@ def direccion_desde_hasta(pos1 : Posicion, pos2 : Posicion) -> Direccion: # prag
 def pasar_turno(j : Juego) -> Juego: # pragma: no cover
     return Juego(j.tablero, oponente(j.turno), 0)
 
-# hacer requiere y asegura
+
 
 def copiar_tablero(t : Tablero) -> Tablero:
+    """
+    PRE: {True}
+    Args: 
+        t (Tablero) : es una lista de lista de casillas sobre el cual se quiere realizar una copia.
+
+    Returns: devuelve un tablero nuevo *copia*, el cual contiene los mismos elementos que el tablero *t* que el dado
+    """
+    
     copia : Tablero = []
     for fila in t:
          copia.append(fila.copy())
@@ -32,21 +40,22 @@ def copiar_tablero(t : Tablero) -> Tablero:
 
 #### Ejercicio 1
 
-# problema tablero_bien_formado ( in t : Tablero ) : Bool {
-        # requiere { True }
-        # asegura { res = true ←→ tableroBienFormado (t) }
-        # }
-
-# aux tableroBienFormado (t : Tablero ) :=
-        # |t| = Alto
-        #  ∧ para todo i:Z.(0 ≤ i < |t| → |t[i]| = Ancho 
 
 # Explicacion: esta funcion busca decidir (es True o False) si un tablero (una lista de listas, ver en ejemplo_tablero) es valido. 
 # Es valido, devuelve True, si el tablero es la tiene una cantidad ALTO de filas (la longitud del tablero es ALTO) 
 # y cada fila tiene la longitud ANCHO
 
 def tablero_bien_formado(t : Tablero) -> bool:
+        """
+        Indica si el tablero ingresado tiene una cantidad 8 de filas y cada fila tiene la longitud 8. #preguntar pongo ancho/alto o 8 
 
+        PRE: {True}
+        Args:
+            t (Tablero) : es una lista de lista de casillas sobre la que se quiere definir si esta bien formada.
+
+        Returns:
+            True ←→ todas las filas en el tablero *t* son 8 y todas las casillas dentro de cada fila tambien es 8.
+        """
         esTableroBienFormado: bool = False
 
         if len(t) == ALTO:
@@ -62,51 +71,28 @@ def tablero_bien_formado(t : Tablero) -> bool:
 
 
 
-
-# problema posición_en_tablero ( in pos : Posición ) : Bool {
-        # requiere { True }
-        # asegura { res = true ←→ posiciónEnTablero (pos) }
-        # }
-
-# aux posiciónEnTablero (pos : Posición ) :=
-        # 0 ≤ pos. fila < Alto
-        # ∧ 0 ≤ pos. columna < Ancho
-
 # Explicacion: esta funcion busca decidir (es True o False) si una poscicion: pos = (fila,columna) pertenece al tablero del juego
 # es True si la parte de filas en pos (pos.fila -> pos[0]) esta entre 0 y el alto 
 # Y si la parte de columnas en pos (pos.columna -> pos[1]) esta entre 0 y el ancho
 
 def posicion_en_tablero(pos : Posicion) -> bool:
-      
-        if (0 <= (pos.fila) < ALTO) and (0 <= (pos.columna) < ANCHO): # si la pos pertenece al tablero...
-                return True
-        else: 
-                return False
+    """
+    Indica si la posicion *pos* dada esta dentro del tablero de juego.
+    
+    PRE: {True}
+    Args: 
+        pos (Posicion) : es una variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente sobre la cual se quiere analizar.
 
-# t =           ['hcdmedch', #7
-#               'rrrrrrrr', #6
-#               '--------', #5
-#               '--------', #4
-#               '--------', #3
-#               '--------', #2
-#               'RRRRRRRR', #1
-#               'HCDMEDCH'] #01234567
+    Returns:
+        True ←→ la primera y segunda componente de posicion *pos* estan en el rango [0,8).
+    
+    """
+    if (0 <= (pos.fila) < ALTO) and (0 <= (pos.columna) < ANCHO): # si la pos pertenece al tablero...
+        return True
+    
+    else: 
+        return False
 
-# print(posicion_en_tablero(Posicion(0,8)))
-
-
-
-
-# problema movimiento_bien_formado ( in m : Movimiento ) : Bool {
-        # requiere { True }
-        # asegura { res = true ←→ movimientoBienFormado (m) }
-        # }
-
-# aux movimientoBienFormado (m : Movimiento ) :=
-# posiciónEnTablero (m. origen )
-        # ∧ (m. acción = Mover_a_secas → |m. pasos | = 1)
-        # ∧ (m. acción = Arrastrar → |m. pasos | = 2)
-        # ∧ (m. acción = Empujar → |m. pasos | = 2)
 
 # Explicacion: esta funcion busca decidir (es True o False) si un movimiento: (accion, poscicion, direcciones) es valido
 # con accion = MOVER_A_SECAS -> muevo mi pieza en UNA sola direccion 
@@ -122,6 +108,15 @@ def posicion_en_tablero(pos : Posicion) -> bool:
 # o si la accion es EMPUJAR su lista de direciones(m.pasos) debe contener DOS direciones ( 1: a donde me voy a mover) ( 2: a donde muevo al oponente)
 
 def movimiento_bien_formado(m : Movimiento) -> bool:
+    """
+    Indica si el movimiento *m* dado esta bien formado.
+        
+    PRE: {True}
+    Args:
+        m (Movimiento) : representa un movimiento como una tripla (accion (Acción), origen (Posicion), pasos (list[Direccion])), la cual se quiere revisar que este o no bien formada. 
+    
+    Returns: True ←→ posicion_en_tablero(origen) == True ∧  (m. acción = Mover_a_secas → |m. pasos| = 1) ∧ (m. acción = Arrastrar → |m. pasos| = 2) ∧ (m. acción = Empujar → |m. pasos| = 2).
+    """
 
     if posicion_en_tablero(m.origen):
         if m.accion == MOVER_A_SECAS and len(m.pasos) == 1:
@@ -137,21 +132,23 @@ def movimiento_bien_formado(m : Movimiento) -> bool:
 
 
 
-             
-# problema juego_bien_formado ( in j : Juego ) : Bool {
-    # requiere { True }
-    # asegura { res = true ←→ juegoBienFormado (j ) }
-# }
-
-# aux juegoBienFormado (j : Juego ) :=
-    # tableroBienFormado (j . tablero )
-    # ∧ 0 ≤ j . pasosConsumidos < Max_pasos
-
 # Explicacion: esta funcion decide (es True o False) si un juego: (tablero, color, pasosConsumidos) esta bien formado 
 # donde color representa a que jugador le toca jugar y pasosConsumidos es el numero (int) de pasos que ya se hizo por el jugador de ese color en el turno actual
 # se revisa si el tablero esta bien formado Y si la cantidad de pasos es menor a 4 
 
 def juego_bien_formado(j : Juego) -> bool:
+    """
+    Indica si un juego *j* dado esta bien formado.
+
+    PRE: {True}
+    Args:
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                    donde el tablero *t* es el actual del juego,
+                    el color *turno* es el del jugador al que le toca jugar, 
+                    y *pasosConsumidos* es el numero entero de pasos ya efectuados.
+    
+    Returns: True ←→ tablero_bien_formado(t) == True ∧ *pasosConsumidos* <= 4
+    """
     return tablero_bien_formado(j.tablero) and (0 <= j.pasos_consumidos < MAX_PASOS)
 
 
@@ -159,15 +156,6 @@ def juego_bien_formado(j : Juego) -> bool:
 
 #### Ejercicio 2
 
-# problema posición_vecina_hacia ( in pos : Posición , in d : Dirección ) : Posición {
-    # requiere { True }
-    # asegura { esPosiciónVecinaHacia (pos, d, res) }
-    # }
-# aux esPosiciónVecinaHacia (pos : Posición , d : Dirección , pos′ : Posición ) :=
-    # (d = Norte → (pos′ . fila = pos. fila + 1 ∧ pos′ . columna = pos. columna ))
-    # ∧ (d = Sur → (pos′ . fila = pos. fila - 1 ∧ pos′ . columna = pos. columna ))
-    # ∧ (d = Este → (pos′ . fila = pos. fila ∧ pos′ . columna = pos. columna + 1))
-    # ∧ (d = Oeste → (pos′ . fila = pos. fila ∧ pos′ . columna = pos. columna - 1))
 
 # Explicacion: esta funcion devuelve una pos_vecina: (fila,columna) en una direccion "d" respecto a una pos: (fila,columna) dada
 # entonces si:
@@ -177,6 +165,20 @@ def juego_bien_formado(j : Juego) -> bool:
 # d = OESTE debe devolver el vecino de la izquierda -> pos_vecina es (fila, columna - 1)
 
 def posicion_vecina_hacia(pos : Posicion, d : Direccion) -> Posicion:
+    """
+    PRE: {True}
+    Args:
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                    donde el tablero *t* es el actual del juego,
+                    el color *turno* es el del jugador al que le toca jugar 
+                    y *pasosConsumidos* es el numero entero de pasos ya efectuados
+    
+    Returns:  devuelve la posicion vecina *pos_vecina: Posicion* de la posicion *pos* dada, la cual cumple con 
+              (d = Norte → (pos_vecina.fila = pos.fila + 1    ∧    pos_vecina.columna = pos.columna ))
+            ∧ (d = Sur →   (pos_vecina.fila = pos.fila - 1    ∧    pos_vecina.columna = pos.columna ))
+            ∧ (d = Este →  (pos_vecina.fila = pos.fila        ∧    pos_vecina.columna = pos.columna + 1))
+            ∧ (d = Oeste → (pos_vecina.fila = pos.fila        ∧    pos_vecina.columna = pos.columna - 1))
+    """
 
     if   d == NORTE:
         resultado: Posicion  = Posicion(pos.fila +1, pos.columna)
@@ -191,83 +193,82 @@ def posicion_vecina_hacia(pos : Posicion, d : Direccion) -> Posicion:
 
 
 
-
-# problema casilla_en_posición ( in t : Tablero , in pos : Posición ) : Casilla {
-    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-    # asegura { res = t[pos. fila ][pos. columna ] }
-
 # Explicacion: esta funcion da la casilla de la poscion dentro del tablero
 # se busca que hay en la posicion t[fila][columna] y devuelve una c: Casilla (puede ser vacio o pieza: (figura, color) )
 
-def casilla_en_posicion(t : Tablero, p : Posicion) -> Casilla:
-    
-    c: Casilla = t[p.fila][p.columna]
+def casilla_en_posicion(t : Tablero, pos : Posicion) -> Casilla:
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, sobre la cual se quiere definir su casilla en el tablero *t*.
+            
+        Returns: devuelve una Casilla *c* la cual refiere a la posicion *pos* dada en el tablero *t*
+    """
+
+    c: Casilla = t[pos.fila][pos.columna]
 
     return c
 
 
 
-
-# problema hay_casilla_vacía ( in t : Tablero , in pos : Posición ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posici ó nEnTablero (pos) }
-    # asegura { res = true ←→ hayCasillaVacía(t, pos) }
-
-# aux hayCasillaVacía(t : Tablero , pos : Posición ) :=
-# posiciónEnTablero (pos)
-# ∧ t[pos. fila ][pos. columna ] = Vacía
-
 # Explicacion: decide (True o False) dada una pos: (fila,columna) revisa si en el tablero t[fila][columna] es vacia 
 # si esa casilla (c: casilla = t[fila][columna] ) es vacia devuelve True
 
 def hay_casilla_vacia(t : Tablero, pos : Posicion) -> bool:
-    
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                             sobre la cual se quiere definir si su casilla en el tablero *t* esta vacia o no.
+            
+        Returns: True ←→ la Casilla *c*, la cual refiere a la posicion *pos* dada en el tablero *t*, es vacia. 
+    """
+
     c: Casilla = t[pos.fila][pos.columna]
 
     return (c == VACIA)
 
 
 
-
-# problema hay_pieza_de_color ( in t : Tablero , in pos : Posición , in col : Color ) : Bool {
-# requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-# asegura { res = true ←→ hayPiezaDeColor (t, pos, col) }
-
-# aux hayPiezaDeColor (t : Tablero , pos : Posición , col : Color ) :=
-# existe f : Figura . hayFiguraDeColor (t, pos, f , col)
-
-# aux hayFiguraDeColor (t : Tablero , pos : Posición , f : Figura , col : Color ) :=
-# posiciónEnTablero (pos)
-# ∧ ¬hayCasillaVacía (t, pos)
-# ∧ t[pos. fila ][pos. columna ]. figura = f
-# ∧ t[pos. fila ][pos. columna ]. color = col
-
 # Explicacion: decide (es True o False) si en la poscicion pos en el tablero hay una pieza Y es del color dado
 
 def hay_pieza_de_color(t : Tablero, pos : Posicion, col : Color) -> bool:
-   
-   c: Casilla = t[pos.fila][pos.columna]
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                             sobre la cual se quiere definir si su casilla en el tablero *t* tiene una Pieza del color *col* dado.
+            col (Color) : la variable refiere a PLATEADO o DORADO. 
+            
+        Returns: True ←→ si la Casilla *c*, la cual refiere a la posicion *pos* dada en el tablero *t*, no es vacia y el color de su figura es igual al color *col* dado. 
+    """
 
-   return ( not (hay_casilla_vacia(t,pos)) and ( c.color == col ) )
+    c: Casilla = t[pos.fila][pos.columna]
+
+    return ( not (hay_casilla_vacia(t,pos)) and ( c.color == col ) )
 
 
 
 
 #### Ejercicio 3
 
-# problema hay_casilla_vacía_hacia ( in t : Tablero , in pos : Posición , in d : Dirección ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-    # asegura { res = true ←→ hayCasillaVacíaHacia (t, pos, d) }
-
-# aux hayCasillaVacíaHacia (t : Tablero , pos : Posición , d : Dirección ) :=
-    # existe pos′: Posición . (
-    # esPosicionVecinaHacia (pos, d, pos′ )
-    # ∧ hayCasillaVacía(t, pos′ )
 
 # Explicacion: decide (es True o False) si hay una casilla vacia en una direccion particular dada
 # Para ello buscamos la posicion vecina en esa direccion y con esa pos_vecina evaluamos si es que su casilla es vacia o no 
 
 def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
-    
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                             sobre la cual se quiere definir si su casilla vecina dentro del tablero *t* en una direccion *d* particular esta vacia o no.
+            
+        Returns: True ←→ la casilla vecina en la direccion *d* de la poscicion *pos*  dada , esta en el tablero *t* y es vacia. 
+    """
     pos_vecina: Posicion = posicion_vecina_hacia(pos,d)
     
     if posicion_en_tablero(pos_vecina) and hay_casilla_vacia(t, pos_vecina):  
@@ -277,27 +278,23 @@ def hay_casilla_vacia_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
 
 
 
-# problema hay_pieza_amiga_vecina ( in t : Tablero , in pos : Posición ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posici ó nEnTablero (pos) }
-    # requiere { hayPieza (t, pos) }
-    # asegura { res = true ←→ hayPiezaAmigaVecina (t, pos) }
-
-# aux hayPiezaAmigaVecina (t : Tablero , pos : Posición ) :=
-    # existe d: Dirección . hayPiezaAmigaHacia (t, pos, d
-  
-# aux hayPiezaAmigaHacia (t : Tablero , pos : Posición , d : Dirección ) :=
-    # existe col: Color . existe posamiga : Posición . (
-    # hayPiezaDeColor (t, pos, col)
-    # ∧ esPosiciónVecinaHacia (pos, d, posamiga )
-    # ∧ hayPiezaDeColor (t, posamiga , col)
-    # )
-
 # Explicacion: esta funcion decide (es True o False) si existe alguna pieza en alguna direccion (norte,sur,este,oeste)
 # tal que esa pieza es del mismo color que la pieza en la posicion ingresada.
 # Para eso, buscamos revisar cada vecino en cada direccion. Al revisar comparamos el color del vecino con el color de la pos ingresada.
 # al primer vecino en la primera direccion que se encuentra se devuelve True
 
 def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                             sobre la cual se quiere definir si tiene alguna casilla vecina en el tablero *t* con una Pieza del mismo color que del de la posicion *pos* dada.
+            
+        Returns: True ←→ si existe alguna casilla vecina en el tablero *t* respecto a la posicion *pos* dada, tal que esa casilla no es vacia y el color de su figura es igual al color de la posicion *pos* dada. 
+    """
+
+    
     ds: list[Direccion] = [NORTE,SUR,ESTE,OESTE]
   
     if not(hay_casilla_vacia(t,pos)):
@@ -316,20 +313,6 @@ def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
 
 
 
-
-# problema hay_pieza_enemiga_más_débil_hacia ( in t : Tablero, in pos : Posición,in d : Dirección ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-    # requiere { hayPieza (t, pos) }
-    # asegura { res = true ←→ hayPiezaEnemigaMásDébilHacia (t, pos, d) }
-    # }
-
-# aux hayPiezaEnemigaMásDébilHacia (t : Tablero , pos : Posición , d : Dirección ) :=
-    # existe f : Figura .existe col: Color . existe posenemiga : Posición .existe fenemiga : Figura . (
-    # hayFiguraDeColor (t, pos, f , col)
-    # ∧ esPosiciónVecinaHacia (pos, d, posenemiga )
-    # ∧ hayFiguraDeColor (t, posenemiga , fenemiga , oponente (col))
-    # ∧ fuerza (f ) > fuerza (fenemiga )
-
 # Explicacion:  dada una pos: Posicion(fila,columna) donde hay una pieza (es decir, no es vacia) 
 # decide (es True o False) si es que hay una pieza enemiga (del otro color) en una direccion particular: d y 
 # esta tiene menor fuerza que la fuerza de la pieza en la pos ingresada.
@@ -338,6 +321,17 @@ def hay_pieza_amiga_vecina(t : Tablero, pos : Posicion) -> bool:
 # En el caso de ser enemiga y de fuerza menor se devuelve True sino devuelve False
 
 def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion) -> bool:
+    """
+            PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) ∧ ¬hay_casilla_vacia(pos) == True }
+            Args: 
+                t (Tablero) : una lista de lista de casillas.
+                pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                                 sobre la cual se quiere definir si tiene una casilla vecina dentro del tablero *t* en una direccion particular con una pieza del color contrario y de menor fuerza respecto a la posicion *pos* dada.
+                
+            Returns: True ←→ si existe una casilla vecina a la posicion *pos* dada dentro del tablero *t* en la direccion *d* particular, tal que esa casilla tiene una figura de contrario color y de menor fuerza respecto a la posicion *pos* dada.
+    """
+    
+
     casilla_pos: Casilla = t[pos.fila][pos.columna]
     figura_pos: Figura = casilla_pos.figura
     fuerza_pos: int = fuerza(figura_pos)
@@ -356,24 +350,6 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
 
 
 
-
-# problema hay_pieza_enemiga_más_fuerte_vecina ( in t : Tablero , in pos : Posición ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-    # requiere { hayPieza (t, pos) }
-    # asegura { res = true ←→ hayPiezaEnemigaMásFuerteVecina (t, pos) }
-# # }
-
-# aux hayPiezaEnemigaMásFuerteVecina (t : Tablero , pos : Posición ) :=
-    # existe d: Dirección . hayPiezaEnemigaMasFuerteHacia (t, pos, d)
-
-# aux hayPiezaEnemigaMásFuerteHacia (t : Tablero , pos : Posición , d : Dirección ) :=
-    # existe f : Figura.existe col: Color . existe posenemiga : Posición .existe fenemiga : Figura . (
-    # hayFiguraDeColor (t, pos, f , col)
-    # ∧ esPosiciónVecinaHacia (pos, d, posenemiga )
-    # ∧ hayFiguraDeColor (t, posenemiga , fenemiga , oponente (col))
-    # ∧ fuerza (f ) < fuerza (fenemiga )
-    # )
-
 # Explicacion: la funcion decide (es True o False) si existe una pieza enemiga mas fuerte al rededor de la pieza en la pos ingresada 
 # para eso definimos variables sobre la pos ingresada (su color, su fuerza), 
 # luego por direccion en la lista de direcciones ("ds") buscamos el vecino en esa d y comparamos colores para buscar enemigos
@@ -381,6 +357,17 @@ def hay_pieza_enemiga_mas_debil_hacia(t : Tablero, pos : Posicion, d : Direccion
 
 
 def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
+    """
+            PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) ∧ ¬hay_casilla_vacia(pos) == True }
+            Args: 
+                t (Tablero) : una lista de lista de casillas.
+                pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                                 sobre la cual se quiere definir si tiene alguna casilla vecina dentro del tablero *t* con una pieza del color contrario y de menor fuerza respecto a la posicion *pos* dada.
+                
+            Returns: True ←→ si existe alguna casilla vecina a la posicion *pos* dada dentro del tablero *t*, tal que esa casilla tiene una figura de contrario color y de menor fuerza respecto a la posicion *pos* dada.
+    """
+
+
     c_pos: Casilla = t[pos.fila][pos.columna]
     f_pos: Figura = c_pos.figura
     col_pos: Color = c_pos.color
@@ -404,22 +391,20 @@ def hay_pieza_enemiga_mas_fuerte_vecina(t : Tablero, pos : Posicion) -> bool:
 
 
 
-
-# problema hay_pieza_congelada ( in t : Tablero , in pos : Posición ) : Bool {
-    # requiere { tableroBienFormado (t) ∧ posiciónEnTablero (pos) }
-    # asegura { res = true ←→ hayPiezaCongelada (t, pos) }
-    # }
-
-# aux hayPiezaCongelada (t : Tablero , pos : Posición ) :=
-    # hayPieza (t, pos) --> no esta vacia la casilla 
-    # ∧ hayPiezaEnemigaMásFuerteVecina (t, pos)
-    # ∧ ¬hayPiezaAmigaVecina (t, pos)
-
 # Explicacion: esta funcion decide ( es True o False) si una pos se encuentra congelada 
 # Para eso, se revisa si es o no vacia la casilla de esa pos. 
 # Luego si hay una pieza vecina enemiga mas fuerte Y no hay una pieza amiga vecina, entonces devuelve True (sino devuelve False)
 
 def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
+    """
+            PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+            Args: 
+                t (Tablero) : una lista de lista de casillas.
+                pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                                 sobre la cual se quiere definir de tener alguna pieza en el tablero *t*, si esta congeladoa o no. 
+                
+            Returns: True ←→ si la pieza de la posicion *pos* dada esta o no congelada. 
+    """
 
     if not( hay_casilla_vacia(t, pos)):
          if hay_pieza_enemiga_mas_fuerte_vecina(t, pos) and not(hay_pieza_amiga_vecina(t,pos)):
@@ -429,29 +414,26 @@ def hay_pieza_congelada(t : Tablero, pos : Posicion) -> bool:
 
 
 
-
 #### Ejercicio 4
 
-#definimos la funcion auxiliar: direcciónDeMovimientoHabilitada
-
-# problema direcciónDeMovimientoHabilitada( in t : Tablero , pos : Posición , d : Dirección ) : Bool {
-    # requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
-    # asegura { res = true ←→ hayFiguraDeColor (t, pos, f , col) ∧ ((f = Conejo ∧ col = Dorado ) → d ̸= Sur ) ∧ ((f = Conejo ∧ col = Plateado ) → d ̸= Norte ) }
-    # }
-
-# aux direcciónDeMovimientoHabilitada (t : Tablero , pos : Posición , d : Dirección ) :=
-# existe f : Figura .existe col: Color . (
-    # hayFiguraDeColor (t, pos, f , col)
-    # ∧ ((f = Conejo ∧ col = Dorado ) → d ̸= Sur )
-    # ∧ ((f = Conejo ∧ col = Plateado ) → d ̸= Norte )
-    # )
 
 # Explicacion: la funcion decide ( es True o False) si la direccion de un movimiento esta habilitada 
 # Para eso, declara las variables pieza, f: figura, col: color y revisa 
 # si la pieza es conejo y dorado NO puede ir al sur
 # si la pieza es conejo y plateado NO puede ir al norte
 
-def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) -> bool:
+def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) -> bool: #auxiliar
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  posicion_en_tablero(pos) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+            pos (Posicion) : variable que refiere a una fila (int) en su primer componente y a una columna (int) en su segunda componente, 
+                             sobre la cual se quiere definir si su casilla se puede mover o no en una direccion *d* particular. 
+            d (Direccion): direccion sobre la que se quiere concluir si se puede mover o no. 
+
+        Returns: True ←→ si es que hay una pieza en la posicion *pos* dentro del tablero *t* 
+                             ∧ ((f = Conejo ∧ col = Dorado ) → d ̸= Sur ) ∧ ((f = Conejo ∧ col = Plateado ) → d ̸= Norte )
+    """
 
     if (hay_casilla_vacia(t,pos)):
         return False
@@ -467,27 +449,6 @@ def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) ->
 
     return True 
 
-#definimos la funcion auxiliar: puedeRealizarAcción
-
-# problema puedeRealizarAcción(t : Tablero , m : Movimiento):
-#   requiere: { movimiento_bien_formado(m)}
-#   requiere: { tablero_bien_formado(t)}
-#   asegura: { True <-> (m.acción = Mover_a_secas → puedeMoverASecas (t, m. origen , m. pasos [0])) ∧ 
-#                       (m.acción = Arrastrar → puedeArrastrar (t, m.origen , m.pasos[0] , m.pasos[1])) ∧ 
-#                       (m.acción = Empujar → puedeEmpujar (t, m. origen , m. pasos [0] , m. pasos [1]) }
-
-# aux puedeMoverASecas (t : Tablero , pos : Posición , d : Dirección ) :=
-    # hayCasillaVacíaHacia (t, pos, d)
-
-# aux puedeArrastrar (t : Tablero , pos : Posición , d, darrastre : Dirección ) :=
-    # hayCasillaVacíaHacia (t, pos, d)
-    # ∧ hayPiezaEnemigaMásDébilHacia (t, pos, opuesta (d arrastre ))
-
-# aux puedeEmpujar (t : Tablero , pos : Posición , d, dempuje : Dirección ) :=
-    # hayPiezaEnemigaMásDébilHacia (t, pos, d)
-    # ∧ existe posenemiga : Posición . ( esPosiciónVecinaHacia (pos, d, posenemiga )
-    # ∧ hayCasillaVacíaHacia (t, posenemiga , dempuje )
-
 
 # Explicacion: la funcion decide ( es True o False) si la accion de un movimiento se puede realizar
 # Para eso, declara las variables accion, d: dirreccion y revisa 
@@ -497,8 +458,32 @@ def direcciónDeMovimientoHabilitada(t: Tablero, pos: Posicion, d: Direccion) ->
 # si la accion es EMPUJAR (ultima opcion), se busca la pos vecina en la direccion ()"d"), 
 # si no esta vacia entonces revisa si es mas debil Y si hay una casilla vacia a donde voy a empujar a la otra pieza ("d_empuje")  -> se puede (=True)
 
-def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
-    
+def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool: #auxiliar
+    """
+        PRE: { tablero_bien_formado(t) == True ∧  movimiento_bien_formado(m) == True }
+        Args: 
+            t (Tablero) : una lista de lista de casillas.
+                
+
+        Returns: True ←→ ( m.accion == MOVER_A_SECAS -> hay casilla vacia en la posicion de la direccion 
+                                                        a donde quiero ir (m.pasos[0]) ) dentro del tablero *t* )                     
+                         ∧
+                         ( m.accion == ARRASTRAR -> hay una casilla vacia en la posicion de la direccion
+                                                    a donde quiero ir (m.pasos[0]) dentro del tablero *t*                    
+                                                    ∧                       
+                                                    hay una pieza enemiga mas debil en la posicion de la direccion opuesta a donde quiero arrastrar
+                                                    (opuesta(m.pasos[1]) ) 
+                         ∧
+                         ( m.accion == EMPUJAR -> hay una casilla vacia en la posicion de la direccion
+                                                  a donde quiero ir (m.pasos[0]) dentro del tablero *t*  
+                                                  ∧
+                                                  la posicion en la direccion en donde quiero empujar al enemigo (m.pasos[1]) esta dentro del tablero *t* 
+                                                  ∧
+                                                  hay pieza enemiga mas debil_hacia en la posicion a la que quiero ir 
+                                                  ∧
+                                                  hay una casilla vacia en donde quiero empujar al enemigo )
+
+    """
     pos: Posicion = m.origen 
     accion: Accion = m.accion
     d: Direccion = m.pasos[0]
@@ -529,17 +514,6 @@ def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
 
     return False
 
-# problema puede_realizar_movimiento ( in j : Juego , in m : Movimiento ) : Bool {
-    # requiere { juegoBienFormado (j) ∧ movimientoBienFormado (m) }
-    # asegura { res = true ←→ puedeRealizarMovimiento (j , m) }
-    # }
-
-# aux puedeRealizarMovimiento (j : Juego , m : Movimiento ) :=
-    # hayPiezaDeColor (j. tablero , m. origen , j. turno )
-    # ∧ ¬hayPiezaCongelada (j. tablero , m. origen )
-    # ∧ direcciónDeMovimientoHabilitada (j. tablero , m. origen , m. pasos [0])
-    # ∧ j. pasosConsumidos + |m. pasos | ≤ Max_pasos
-    # ∧ puedeRealizarAcción(j. tablero , m)
 
 # Explicacion: en esta funcion se decide (es True o False) si un movimiento se puede realizar. 
 # Para ello, se usan las funciones auxiliares previamente definidas (direcciónDeMovimientoHabilitada y puedeRealizarAcción)
@@ -548,6 +522,22 @@ def puedeRealizarAcción(t: Tablero, m: Movimiento) -> bool:
 # se revisa si la direccion del movimiento es valida Y si los pasos consumidos junto a los pasos que voy a hacer (mover 1 o 2 piezas) no se pasan de 4 Y si se puede realizar la accion
 
 def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego = ( tablero, turno, pasosConsumidos)
+    """
+    PRE: {juego_bien_formado(j) == True ∧ movimiento_bien_formado(m) == True}
+    Args: 
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                    donde el tablero *t* es el actual del juego,
+                    el color *turno* es el del jugador al que le toca jugar 
+                    y *pasosConsumidos* es el numero entero de pasos ya efectuados
+        m (Movimiento) : representa un movimiento como una tripla (accion (Acción), origen (Posicion), pasos (list[Direccion])), sobre la cual se quiere revisar 
+                         si se puede realizar el movimiento o no 
+    
+    Returns: True ←→  hay una pieza no congelada del color *turno* en la posicion *origen* del movimiento
+                      ∧ direcciónDeMovimientoHabilitada(j. tablero , m. origen , m. pasos [0]) == True
+                      ∧ j.pasosConsumidos + |m.pasos| ≤ 4
+                      ∧ puedeRealizarAcción(j. tablero , m) == True
+    """
+    
     turno : Color = j.turno
     t: Tablero = j.tablero
     pos: Posicion = m.origen  # m.origen -> (fila_origen, columna_origen)
@@ -565,44 +555,21 @@ def puede_realizar_movimiento(j : Juego, m : Movimiento) -> bool:      # juego =
 #### Ejercicio 5
 
 
-# problema activar_trampas ( in t : Tablero ) : Tablero {
-    # requiere { tableroBienFormado (t) }
-    # asegura { tableroBienFormado (res) }
-    # asegura { esTableroDespuésDeActivarTodasLasTrampas (t, res) }
-    # }
-
-# aux esTableroDespuésDeActivarTodasLasTrampas (t0 , t1 : Tablero ) :=
-    # existe t intermedio1 ,t intermedio2 ,t intermedio3 : Tablero . (
-    # esTableroDespuésDeActivarTrampa (t0 , tintermedio1 , Posiciones_trampa [0])
-    # ∧ esTableroDespuésDeActivarTrampa (tintermedio1 , tintermedio2 , Posiciones_trampa [1])
-    # ∧ esTableroDespuésDeActivarTrampa (tintermedio2 , tintermedio3 , Posiciones_trampa [2])
-    # ∧ esTableroDespuésDeActivarTrampa (tintermedio3 , t1 , Posiciones_trampa [3])
-    # )
-
-# aux esTableroDespuésDeActivarTrampa (t0 , t1 : Tablero , postrampa : Posición ) :=
-    # ( hayPiezaAmigaVecina (t0 , postrampa ) → t1 = t0 )
-    # ∧ (¬hayPiezaAmigaVecina (t0 , postrampa ) → esTableroSacandoPieza (t0 , t1 , postrampa ))
-
-        
-# aux esTableroSacandoPieza (t0 , t1 : Tablero , pos : Posición ) :=
-    # tablerosCoincidenSalvoEnLaPosición(t0 , t1 , pos)
-    # ∧ hayCasillaVacía(t1 , pos)
-
-# aux tablerosCoincidenSalvoEnLaPosición(t1 , t2 : Tablero , pos : Posición ) :=
-    # para todo pos′ : Posición .(
-    # ( posiciónEnTablero (pos′ ) ∧ pos′ ̸= pos) →
-    # tablerosCoincidenEnLaPosición(t1 , t2 , pos′ )
-    # )
-
-# aux tablerosCoincidenEnLaPosición(t1 , t2 : Tablero , pos : Posición ) :=
-    # t1 [pos. fila ][pos. columna ] = t2 [pos. fila ][pos. columna ]
-
 # Explicacion: esta funcion busca eliminar del tablero las piezas que estan en las posiciones trampa en el caso de que no tenga una pieza amiga vecina
 # para eso revisa por cada poscion trampa (pos_trampa), si la pos_trampa no esta vacia y no tiene una pieza amiga vecina
 # de ser ambas condiciones True -> vacia la casilla de pos_trampa donde estaba la pieza (entonces si Casilla = PIEZA, ahora Casilla = VACIO)
 # como solo modifica el mismo tablero ("t") dado, no debe hacer return, modifica el tablero dado
 
 def activar_trampas(t : Tablero) -> Tablero:
+    """
+    PRE: {tablero_bien_formado(t) == True}
+    Args: 
+         t (Tablero) : una lista de lista de casillas.
+
+    Returns: devuelve un tablero nuevo *t_res (Tablero)* el cual tiene las trampas activadas, 
+             es decir si hay una pieza en una de las posciciones trampa y no esta rodeada de ninguna pieza amiga, la pieza debe ser eliminada del tablero 
+             (la casilla en esa posicion trampa se vacia)
+    """
     t_res: Tablero = copiar_tablero(t)
 
     for pos_trampa in POSICIONES_TRAMPA:
@@ -615,96 +582,33 @@ def activar_trampas(t : Tablero) -> Tablero:
     return t_res # hay que crear un nuevo tablero?? devolvemos el mismo modificado
 
 
-# t1: Tablero = leer_tablero([
-#               'R-e--mRr', #7
-#               '------dE', #6
-#               'h--Rr-RR', #5
-#               'c--R-C--', #4
-#               '-rCHDrr-', #3
-#               '----rc--', #2
-#               'h-R-M-R-', #1
-#               'rr-D-dH-', #0
-#               #01234567
-#             ])
-# t2 = activar_trampas(t1)
 
-# mostrar_tablero_en_pantalla(t2)
-    
 #### Ejercicio 6
 
-# problema realizar_movimiento ( in j : Juego , in m : Movimiento ) : Juego {
-    # requiere { juegoBienFormado (j ) ∧ movimientoBienFormado (m) }
-    # requiere { puedeRealizarMovimiento (j , m) }
-    # asegura { juegoBienFormado (res) }
-    # asegura { juegoPostMovimiento (j , res, m) }
-    # }
 
-# aux juegoPostMovimiento (j0 , j1 : Juego , m : Movimiento ) :=
-    # tableroPostMovimiento (j0 . tablero , j1 . tablero , m)
-    # ∧ juegoConTurnoPosiblementeAvanzado (j0 , j1 , m)
-
-# aux juegoConTurnoPosiblementeAvanzado (j0 , j1 : Juego , m : Movimiento ) :=
-    # ( hayQueCambiarDeTurno (j0 , m) → (j1 . turno = oponente (j0 . turno ) ∧ j1 . pasosConsumidos = 0)) hay que cambiar de turno cuando el color es el del oponente y ya no se consumen mas pasos
-    # ∧ (¬hayQueCambiarDeTurno (j0 , m) → (j1 . turno = j0 . turno ∧ j1 . pasosConsumidos = j0 . pasosConsumidos + |m. pasos |))
-
-# aux hayQueCambiarDeTurno (j : Juego , m : Movimiento ) :=
-    # j . pasosConsumidos + |m. pasos | = Max_pasos
-
-# aux tableroPostMovimiento (t0 , t1 : Tablero , m : Movimiento ) :=
-    # (m.acción = Mover_a_secas → tableroPostMoverASecas (t0 , t1 , m.origen , m.pasos [0]))
-    # ∧ (m.acción = Arrastrar → tableroPostArrastrar (t0 , t1 , m.origen , m.pasos [0] , m.pasos [1]))
-#     # ∧ (m.acción = Empujar → tableroPostEmpujar (t0 , t1 , m.origen , m.pasos [0] , m.pasos [1]))
-
-# aux tableroPostMoverASecas (t0 , t1 : Tablero , pos : Posición , d : Dirección ) :=
-    # existe posdestino : Posición . existe tintermedio : Tablero . (
-    # esPosiciónVecinaHacia (pos, d, posdestino )
-    # ∧ esTableroTrasladandoPieza (t0 , tintermedio , pos, posdestino )
-    # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio , t1 )
-    # )
-
-# aux tableroPostArrastrar (t0 , t1 : Tablero , pos : Posición , d, darrastre : Dirección ) :=
-    # existe poshueco , posenemiga : Posición . existe tintermedio1 ,tintermedio2 : Tablero . (
-    # esPosiciónVecinaHacia (pos, d, poshueco )
-    # ∧ esPosiciónVecinaHacia (pos, opuesta (darrastre ) , posenemiga )
-    # ∧ esTableroTrasladandoPieza (t0 , tintermedio1 , pos, poshueco )
-    # ∧ esTableroTrasladandoPieza (tintermedio1 , tintermedio2 , posenemiga , pos)
-    # ∧ esTableroDespu é sDeActivarTodasLasTrampas (tintermedio2 , t1 )
-    # )
-
-# aux tableroPostEmpujar (t0 , t1 : Tablero , pos : Posición , d, dempuje : Dirección ) :=
-    # existe posenemiga , poshueco : Posición . existe tintermedio1 ,tintermedio2 : Tablero . (
-    # esPosiciónVecinaHacia (pos, d, posenemiga )
-    # ∧ esPosiciónVecinaHacia (posenemiga , dempuje , poshueco )
-    # ∧ esTableroTrasladandoPieza (t0 , tintermedio1 , posenemiga , poshueco )
-    # ∧ esTableroTrasladandoPieza (tintermedio1 , tintermedio2 , pos, posenemiga )
-    # ∧ esTableroDespuésDeActivarTodasLasTrampas (tintermedio2 , t1 )
-    # )
-
-
-# aux esTableroTrasladandoPieza (t0 , t1 : Tablero , posorigen ,posdestino : Posición ) :=
-    # existe f : Figura .existe col: Color .existe tintermedio : Tablero . (
-    # hayFiguraDeColor (t0 , posorigen , f , col)
-    # ∧ esTableroSacandoPieza (t0 , tintermedio , posorigen )
-    # ∧ esTableroPoniendoPieza (tintermedio , t1 , posdestino , f , col)
-#     # )
-
-# aux esTableroPoniendoPieza (t0 , t1 : Tablero , pos: Posición , f : Figura , col: Color ) :=
-    # tablerosCoincidenSalvoEnLaPosición (t0 , t1 , pos)
-    # ∧ hayFiguraDeColor (t1 , pos, f , col)
-
-# aux tablerosCoincidenSalvoEnLaPosici ó n (t1 , t2 : Tablero , pos : Posición ) :=
-    # para todo pos′ : Posición .(
-    # ( posiciónEnTablero (pos′ ) ∧ pos′̸ = pos) →
-    # tablerosCoincidenEnLaPosición (t1 , t2 , pos′ )
-    # )
-
-# aux tablerosCoincidenEnLaPosición (t1 , t2 : Tablero , pos : Posición ) :=
-    # t1 [pos. fila ][pos. columna ] = t2 [pos. fila ][pos. columna ]
-
-
-# explicacion: devuelve juego modificando valores del tablero dependiendo de la accion --falta completar
+# explicacion: devuelve juego modificando valores del tablero dependiendo de la accion 
 
 def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
+    """
+    PRE: {juego_bien_formado(j) == True ∧ movimiento_bien_formado(m) == True ∧ puede_realizar_movimiento(j,m) == True  }
+    Args: 
+            j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                        donde el tablero *t* es el actual del juego,
+                        el color *turno* es el del jugador al que le toca jugar 
+                        y *pasosConsumidos* es el numero entero de pasos ya efectuados
+            m (Movimiento) : representa el movimiento por realizar como una tripla (accion (Acción), origen (Posicion), pasos (list[Direccion])),
+
+    Returns: devuelve un juego nuevo *j2*, el cual cumple:
+            j2.tablero -> es el tablero j1 actualizado respecto a la accion de movimiento realizada 
+                         (MOVER_A_SECAS -> se mueve la posicion *origen* hacia la casilla en la direccion m.pasos[0]) 
+                         (ARRASTRAR -> se mueve la posicion *origen* hacia la casilla en la direccion m.pasos[0] y la pieza vecina enemiga que voy a arrastrar a la posicion en la direccion de arrastre)
+                         (EMPUJE -> se mueve la posicion *origen* hacia la casilla en la direccion m.pasos[0] y la pieza vecina enemiga que voy a empujar a la posicion en la direccion de empuje)
+            j2.turno -> es el mismo turno si (pasosConsumidos del j1 + |m.pasos|) < 4
+                        es el color opuesto a j1.turno si pasosConsumidos del j1 + |m.pasos| == 4
+            j2.pasos_consumidos-> es (pasosConsumidos del j1 + |m.pasos|) si es < 4
+                                  si no es 0
+    """
+
     tablero_original: Tablero = j.tablero
     t: Tablero = copiar_tablero(tablero_original)
     
@@ -757,57 +661,20 @@ def realizar_movimiento(j : Juego, m : Movimiento) -> Juego:
 
 #### Ejercicio 7
 
-# problema hay_ganador_determinado ( in j : Juego ) : Bool {
-#     # requiere { juegoBienFormado (j) }
-#     # asegura { res = true ←→ hayGanadorDeterminado (j) }
-#     # }
 
-# aux hayGanadorDeterminado (j : Juego ) :=
-# existe col: Color . esJugadorGanador (j , col)
+def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool: #auxiliar
+    """
+    PRE: {tablero_bien_formado(t) == True}
+    Args: 
+        t (Tablero) : una lista de lista de casillas.
+        col (Color) : la variable refiere a PLATEADO o DORADO, sobre el cual se quiere revisar si hay conejo en la     
+                      fila objetivo 
+                      (fila 7, si col == DORADO) (fila 0, si col == PLATEADO)
 
-# aux esJugadorGanador (j : Juego , col : Color ) :=
-# ( esInicioDeTurno (j , oponente (col)) ∧ reúneCondicionesDeGanar (j , col))
-# ∨ ( esInicioDeTurno (j , col) ∧ reúneCondicionesDeGanarExclusivas (j , col))
+    Returns: True ←→ si hay alguna casilla en la fila objetivo con una pieza del color dado ∧ figura conejo en el     
+                     tablero *t* 
+    """
 
-
-# aux esInicioDeTurno (j : Juego , col : Color ) :=
-# j. turno = col ∧ j. pasosConsumidos = 0
-
-# aux reúneCondicionesDeGanar (j : Juego , col : Color ) :=
-# hayConejoEnFilaInicialOponente (j , col)
-# ∨ ¬hayConejoEnTablero (j , oponente (col))
-
-# aux reúneCondicionesDeGanarExclusivas (j : Juego , col : Color ) :=
-# reúneCondicionesDeGanar (col)
-# ∧ ¬reúneCondicionesDeGanar (j , oponente (col)
-
-# aux hayConejoEnTablero (j : Juego , col : Color ) :=
-# existe pos: Posición . hayFiguraDeColor (j. tablero , pos, Conejo , col)
-# aux posici ó nEnFilaInicial (pos : Posición , col : Color ) :=
-# (col = Dorado →pos. fila = 0)
-# ∧ (col = Plateado →pos. fila = 7)
-
-# aux hayConejoEnFilaInicialOponente (j : Juego , col : Color ) :=
-# existe pos: Posición .(
-# posiciónEnFilaInicial (pos, oponente (col))
-# # ∧ hayFiguraDeColor (j. tablero , pos, Conejo , col)
-# # )
-
-# aux posiciónEnFilaInicial (pos : Posición , col : Color ) :=
-# (col = Dorado →pos. fila = 0)
-# ∧ (col = Plateado →pos. fila = 7)
-
-
-#  si el turno es el color del oponente y reune condiciones para ganar el color dado  
-# ( o hay conejo en la fila inicial del oponente o el oponenete no tiene conejos)
-#  entonces gana el color dado
-#  o 
-#  si el turno es el color dado y reune condiciones para ganar el color dado  
-# ( o hay conejo en la fila inicial del oponente o el oponenete no tiene conejos) Y el oponente no tiene conejos en el tablero
-#  entonces gana el color dado
-
-def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool:
-              
     hay_conejo: bool = False
 
     if col == DORADO:
@@ -830,8 +697,16 @@ def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool:
     return hay_conejo
 
 
-def no_hay_conejos(t: Tablero, col: Color) -> bool:
-    
+def no_hay_conejos(t: Tablero, col: Color) -> bool: #auxiliar
+    """
+    PRE: {tablero_bien_formado(t) == True}
+    Args: 
+        t (Tablero) : una lista de lista de casillas.
+        col (Color) : la variable refiere a PLATEADO o DORADO, sobre el cual se quiere revisar que haya o no conejos.
+
+    Returns: True ←→ no hay ninguna casilla con una pieza del color dado ∧ figura conejo en el tablero *t* 
+    """
+
     hay_conejos: bool = False
     
     for f in range(0,8,1):
@@ -846,12 +721,36 @@ def no_hay_conejos(t: Tablero, col: Color) -> bool:
 
     return not(hay_conejos) # si hay conejos -> da False; si no hay conejos -> da True
 
-def reune_condiciones_de_ganar(t: Tablero, col: Color)-> bool:
-     
-     return (  (conejo_en_fila_objetivo(t, col) or (no_hay_conejos(t, oponente(col))))  )
+def reune_condiciones_de_ganar(t: Tablero, col: Color)-> bool: #auxiliar
+    """
+    PRE: {tablero_bien_formado(t) == True}
+    Args:  
+        t (Tablero) : una lista de lista de casillas.
+        col (Color) : la variable refiere a PLATEADO o DORADO, sobre el cual se quiere revisar 
+                      si cumple condiciones de ganar
+    
+    Returns: True ←→ hay un conejo en la fila de objetivo de cada jugador ∨ no hay ningun conejo del oponente. 
+    """
+
+    return (  (conejo_en_fila_objetivo(t, col) or (no_hay_conejos(t, oponente(col))))  )
 
 
-def esJugadorGanador(j: Juego, col: Color) -> bool:
+def esJugadorGanador(j: Juego, col: Color) -> bool: #auxiliar
+    """
+    PRE: {juego_bien_formado(j) == True}
+    Args:
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                        donde el tablero *t* es el actual del juego,
+                        el color *turno* es el del jugador al que le toca jugar 
+                        y *pasosConsumidos* es el numero entero de pasos ya efectuados.
+
+    Returns: True ←→
+                (si el turno es el color del oponente y reune condiciones para ganar el color dado)  ∨
+                (hay conejo en la fila inicial del oponente o el oponenete no tiene conejos)
+                ∨ 
+                (si el turno es el color dado y reune condiciones para ganar el color dado ) ∨ 
+                ( (hay conejo en la fila inicial del oponente o el oponenete no tiene conejos) ∧ (el oponente no tiene conejos en el tablero) )
+    """
 
     t: Tablero = j.tablero 
     turno: Color = j.turno
@@ -866,23 +765,34 @@ def esJugadorGanador(j: Juego, col: Color) -> bool:
     else: 
         return ( (reune_condiciones_de_ganar(t,col)) and ( not (reune_condiciones_de_ganar(t, oponente(col)))) )
 
-    
-
 
 def hay_ganador_determinado(j : Juego) -> bool:
+    """
+    PRE: {juego_bien_formado(j) == True}
+    Args:
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                        donde el tablero *t* es el actual del juego,
+                        el color *turno* es el del jugador al que le toca jugar 
+                        y *pasosConsumidos* es el numero entero de pasos ya efectuados.
+
+    Returns: devuelve si es que hay algun ganador dentro del juego *j*.
+    """
 
     return ( (esJugadorGanador(j, DORADO)) or (esJugadorGanador(j,PLATEADO)) )
 
 
-
-# problema ganador_del_juego ( in j : Juego ) : Color {
-    # requiere { juegoBienFormado (j) }
-    # requiere { hayGanadorDeterminado (j) }
-    # asegura { esJugadorGanador (j , res) }
-    # }
-
 def ganador_del_juego(j : Juego) -> Color:
+    """
+    PRE: {juego_bien_formado(j) == True ∧ hay_ganador_determinado(j) == True}
+    Args:
+        j (Juego) : representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                    donde el tablero *t* es el actual del juego,
+                    el color *turno* es el del jugador al que le toca jugar 
+                    y *pasosConsumidos* es el numero entero de pasos ya efectuados.
 
+    Returns: devuelve el color del ganador del juego *j* dado. 
+    """
+    
     if esJugadorGanador(j, DORADO):
          return DORADO
     
