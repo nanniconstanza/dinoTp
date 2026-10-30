@@ -680,10 +680,10 @@ def conejo_en_fila_objetivo(t: Tablero, col: Color) -> bool: #auxiliar
     if col == DORADO:
         fila_objetivo: int = 7
 
-    elif col == PLATEADO:
+    else:
         fila_objetivo: int = 0 
 
-    for i in range(0,8,1):
+    for i in range(0, ANCHO, 1):
          pos: Posicion = Posicion(fila_objetivo, i)
 
          if not(hay_casilla_vacia( t, pos)) :
@@ -709,8 +709,8 @@ def no_hay_conejos(t: Tablero, col: Color) -> bool: #auxiliar
 
     hay_conejos: bool = False
     
-    for f in range(0,8,1):
-        for c in range(0,8,1):
+    for f in range(0, ALTO, 1):
+        for c in range(0, ANCHO, 1):
             pos: Posicion = Posicion(f,c)
             if not(hay_casilla_vacia( t, pos)) :
                 casilla: Casilla = t[f][c]
