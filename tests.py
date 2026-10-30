@@ -64,6 +64,16 @@ def tablero_una_fila_mas_larga():
         #012345678
     ])
 
+class test_copiar_tablero(unittest.TestCase):
+
+    def test_copiar_tablero_vacio(self):
+        t = []
+        self.assertEqual(t, copiar_tablero(t))
+
+    def copiar_tablero_inicial(self):
+        t = tablero_8x8_inicial_ejemplo()
+        self.assertEqual(t, copiar_tablero(t))
+
 #### Ejercicio 1
 
 class test_tablero_bien_formado(unittest.TestCase):
@@ -134,7 +144,6 @@ class test_movimiento_bien_formado(unittest.TestCase):
 
     def test_empujar_mal(self):
         self.assertFalse(movimiento_bien_formado(Movimiento(EMPUJAR, Posicion(0, 1), [ ])))
-
     
 class test_juego_bien_formado(unittest.TestCase):
 
@@ -154,7 +163,6 @@ class test_juego_bien_formado(unittest.TestCase):
         j = Juego(tablero_8x8_inicial_ejemplo(), PLATEADO, 4)
 
 #### Ejercicio 2
-
 
 class test_posicion_vecina_hacia(unittest.TestCase):
 
@@ -182,7 +190,6 @@ class test_posicion_vecina_hacia(unittest.TestCase):
     def test_posicion_vecina_al_este_fuera_de_tablero(self):
         self.assertEqual(posicion_vecina_hacia(Posicion(1,8), ESTE), Posicion(1, 9))
 
-
 class test_son_posiciones_vecinas(unittest.TestCase): #definida antes del Ej 1
 
     def test_vecinas_vertical(self):
@@ -191,13 +198,11 @@ class test_son_posiciones_vecinas(unittest.TestCase): #definida antes del Ej 1
     def test_vecinas_horizontal(self):
         self.assertTrue(son_posiciones_vecinas(Posicion(0,0), Posicion(0, 1)))
         
-
-def test_son_vecinas_fuera_tablero(self):
+    def test_son_vecinas_fuera_tablero(self):
         self.assertTrue(son_posiciones_vecinas(Posicion(-1,-1),Posicion(-1,-2)))
 
-def test_son_vecinas_diagonales(self):
+    def test_son_vecinas_diagonales(self):
         self.assertFalse(son_posiciones_vecinas(Posicion(0,0), Posicion(1, 1)))
-
 
 class test_casilla_en_posicion(unittest.TestCase):
 
@@ -841,10 +846,7 @@ class test_activar_trampas(unittest.TestCase):
         self.assertNotEqual(t0, t1)
         self.assertEqual(t2, t1)
         
-
-
 #### Ejercicio 6
-
 
 class test_realizar_movimiento(unittest.TestCase):
   
@@ -876,7 +878,6 @@ class test_realizar_movimiento(unittest.TestCase):
         mN = Movimiento(MOVER_A_SECAS, Posicion(4, 3), [NORTE])
         self.assertTrue(puede_realizar_movimiento(j0, mN))
         self.assertEqual(realizar_movimiento(j0, mN), jN)
-
 
     def test_arrastrar(self):
             t0 = leer_tablero([
