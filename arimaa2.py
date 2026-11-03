@@ -800,6 +800,16 @@ def ganador_del_juego(j : Juego) -> Color:
 
 
 def posiciones_de_las_piezas(j:Juego)->dict[Pieza,list[Posicion]]:
+        '''
+    PRE: { juego_bien_formado(j)}
+    Args: 
+        j (Juego): representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                    donde el tablero *t* es el actual del juego,
+                    el color *turno* es el del jugador al que le toca jugar 
+                    y *pasosConsumidos* es el numero entero de pasos ya efectuados.
+
+        returns: devuelve un diccionario con las posiciones de cada pieza 
+    '''
     res: dict[Pieza,list[Posicion]] ={}
     t:Tablero = j.tablero
     listaDeFiguras: list[Figura] = [ELEFANTE,CAMELLO,CABALLO,PERRO,GATO,CONEJO]
@@ -869,6 +879,16 @@ def movimientos_x_pos(t: Tablero, pos: Posicion) -> list[Movimiento]:
                               
 
 def todos_los_movimientos_posibles(j: Juego) -> list[Movimiento]:
+        '''
+    PRE: {juego_bien_formado(j)}
+    Args: j (Juego) :   representa el estado actual del juego como una tripla de la siguiente forma: (t (Tablero), turno (Color), pasosConsumidos (int))
+                        donde el tablero *t* es el actual del juego,
+                        el color *turno* es el del jugador al que le toca jugar 
+                        y *pasosConsumidos* es el numero entero de pasos ya efectuados.
+
+    Returns: una lista con todos los posibles movimientos validos por cada pieza del jugador de turno. 
+
+    '''
     posEnTablero: dict[Pieza,list[Posicion]] = posiciones_de_las_piezas(j)
     turno:Color = j.turno
     t: Tablero=j.tablero
