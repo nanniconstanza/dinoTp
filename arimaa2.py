@@ -819,45 +819,9 @@ def posiciones_de_las_piezas(j:Juego)->dict[Pieza,list[Posicion]]:
                  res[Pieza(figura,color)] = listaDePos
     return res
 
-def tablero_8x8_inicial_ejemplo():
-    return leer_tablero([
-              'hcdmedch', #7
-              'rrrrrrrr', #6
-              '--------', #5
-              '--------', #4
-              '--------', #3
-              '--------', #2
-              'RRRRRRRR', #1
-              'HCDMEDCH', #0
-              #01234567
-            ])
-
-def tablero_8x8_vacio():
-    return leer_tablero([
-              '--------', #7
-              '--------', #6
-              '--------', #5
-              '--------', #4
-              '--------', #3
-              '--------', #2
-              '--------', #1
-              '--------', #0
-              #01234567
-            ])
-
-juegoprueba = Juego(tablero_8x8_vacio(), PLATEADO, 4)
 #EJ 2 ----------------------------------
 
-def todos_los_movimientos_posibles(j: Juego) -> list[Movimiento]:
-    posEnTablero: dict[Pieza,list[Posicion]] = posiciones_de_las_piezas(j)
-    turno:Color = j.turno
-
-    for pieza in posEnTablero:
-        if turno == pieza.color:
-            listaDePos: list[Posicion] = posEnTablero[pieza]
-
-
-def movimientos_x_pos(t: Tablero, pos: Posicion) -> Movimiento:
+def movimientos_x_pos(t: Tablero, pos: Posicion) -> list[Movimiento]:
     listaDeMovimientos: list[Movimiento] = []
     ds: list[Direccion] =[NORTE,SUR,ESTE,OESTE]
     acciones: list[Accion] = [MOVER_A_SECAS, ARRASTRAR, EMPUJAR]
@@ -889,18 +853,38 @@ def movimientos_x_pos(t: Tablero, pos: Posicion) -> Movimiento:
 
         else:
             for d in ds:
-                 
+                if (hay_pieza_enemiga_mas_debil_hacia(t, pos, d)):
+                    listaDePasos: list[Direccion] = []
+                    listaDePasos.append(d) # m.pasos[0]
+                    vecina: Posicion = posicion_vecina_hacia(pos,d)
+                    for d in ds:
+                         pos_empuje: Posicion = posicion_vecina_hacia(vecina,d)
+                         if posicion_en_tablero(pos_empuje) and hay_casilla_vacia(t,pos_empuje):
+                            listaDePasos.append(d) # m.pasos[1]
+                            movimiento: Movimiento = Movimiento(accion, pos, listaDePasos)
+                                                          
+                            listaDeMovimientos.append(movimiento)
 
-     
+        return listaDeMovimientos
+                              
 
-        else:
-            d_empuje: Direccion = m.pasos[1]
-            pos_enemiga_empuje: Posicion = pos_hacia #m.pasos[0]
-            pos_empuje: Posicion = posicion_vecina_hacia(pos_enemiga_empuje,d_empuje)
+def todos_los_movimientos_posibles(j: Juego) -> list[Movimiento]:
+    posEnTablero: dict[Pieza,list[Posicion]] = posiciones_de_las_piezas(j)
+    turno:Color = j.turno
+    t: Tablero=j.tablero
+    res: list[Movimiento] = []
 
-            if not(posicion_en_tablero(pos_empuje)):   
-                    return False
-            
-            return  (  (hay_pieza_enemiga_mas_debil_hacia(t,pos,d)) and (hay_casilla_vacia_hacia(t, pos_enemiga_empuje, d_empuje))  )
-                      
+    for pieza in posEnTablero:
+        if turno == pieza.color:
+            listaDePos: list[Posicion] = posEnTablero[pieza]
+
+            for pos in listaDePos:
+                movimientos = movimientos_x_pos(t,pos)
+                for m in movimientos:
+                      if movimiento_bien_formado(m) and puede_realizar_movimiento(j,m):
+                        res.append(m)
+
+    return res
+                            
+
 
