@@ -57,9 +57,27 @@ class test_todos_los_movimientos_posibles(unittest.TestCase):
         res_esperado = [Movimiento(MOVER_A_SECAS,Posicion(0,7),[OESTE]) , Movimiento(MOVER_A_SECAS,Posicion(1,7),[NORTE]), Movimiento(MOVER_A_SECAS,Posicion(1,7),[OESTE]) ]
         self.assertEqual(todos_los_movimientos_posibles(juegoprueba2) , res_esperado)
 
-    def test_vacio(self):
+    def test_vacio_PLATEADO(self):
         t = tablero_8x8_vacio()
         res_esperado = []
         juegoprueba3 = Juego(t, PLATEADO, 0)
         self.assertEqual(todos_los_movimientos_posibles(juegoprueba3), res_esperado)
+
+    def test_vacio_DORADO(self):
+        t = leer_tablero([
+            '--------', #7
+            '--------', #6
+            '--------', #5
+            '--------', #4
+            '--------', #3
+            '--------', #2
+            '--------', #1
+            '---------', #0
+            #012345678
+        ])
+        j = Juego(t,DORADO,1)
+        listaDeMovimientos: list[Movimiento]=[]
+        pruebaJuego:list[Movimiento]= todos_los_movimientos_posibles(j)
+
+        self.assertEqual(listaDeMovimientos,pruebaJuego)
         
