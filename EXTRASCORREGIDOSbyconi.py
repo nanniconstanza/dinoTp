@@ -21,7 +21,7 @@ def posiciones_de_las_piezas(j:Juego)->dict[Pieza,list[Posicion]]:
             casilla: Casilla = t[f][c] # puede ser o vacio o pieza 
 
             if not hay_casilla_vacia(t, pos):
-                pieza: Pieza = Pieza(casilla) # me aseguro que la la clave del dict sea de tipo pieza
+                pieza: Pieza = casilla # me aseguro que la la clave del dict sea de tipo pieza
 
                 if pieza not in res: # si no esta la inicializo (pieza existe solo si no esta vacia)
                     res[pieza] = [] # creo una lista vacia 
